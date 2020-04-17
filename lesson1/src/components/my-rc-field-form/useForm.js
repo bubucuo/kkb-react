@@ -1,56 +1,61 @@
-import React, {useRef} from "react";
+import React from "react";
 
-//存储所有的数据 ， 包括store
 class FormStore {
   constructor() {
-    // 存储键值对，如username、password
-    this.store = {};
+    this.store = {}; //存储数据，比如说username password
     this.fieldEntities = [];
+    // callback onFinish onFinishFailed
     this.callbacks = {};
   }
 
+  // 注册
   registerField = entity => {
     this.fieldEntities.push(entity);
   };
 
-  setCallbacks = callback => {
+  setCallback = callback => {
     this.callbacks = {
       ...this.callbacks,
       ...callback
     };
   };
 
-  setFieldsValue = newStore => {
+  // 取数据
+  getFiledValue = name => {
+    return this.store[name];
+  };
+  getFiledsValue = () => {
+    return this.store;
+  };
+
+  // 设置数据
+  setFiledsValue = newStore => {
     this.store = {
       ...this.store,
       ...newStore
     };
-    // 更新对应的Field;
+    console.log("this.store", this.store); //sy-log
+
     this.fieldEntities.forEach(entity => {
-      const entityName = entity.props.name;
-      if (this.getFieldValue(entityName) !== undefined) {
+      const {name} = entity.props;
+      // todo 需要更改
+      if (this.getFiledValue(name) !== undefined) {
         entity.onStoreChange();
       }
     });
   };
 
-  getFieldValue = name => {
-    return this.store[name];
-  };
-
-  getFieldsValue = () => {
-    return this.store;
-  };
-
-  validateFields = () => {
+  validate = () => {
     let err = [];
+    // todo
     this.fieldEntities.forEach(entity => {
       const {name, rules} = entity.props;
-      let value = this.getFieldValue(name);
+      let value = this.getFiledValue(name);
       let rule = rules && rules[0];
       if (rule && rule.required && (value === undefined || value === "")) {
+        //  出错
         err.push({
-          [name]: rule.message,
+          [name]: rules.message,
           value
         });
       }
@@ -59,33 +64,28 @@ class FormStore {
   };
 
   submit = () => {
-    // 看校验结果，成功的话执行onFinish，失败执行ononFinishFailed
-    const err = this.validateFields();
+    let err = this.validate();
+    // 在这里校验 成功的话 执行onFinish ，失败执行onFinishFailed
+    const {onFinish, onFinishFailed} = this.callbacks;
     if (err.length === 0) {
-      // 成功 执行onFinish
-      const {onFinish} = this.callbacks;
-      if (onFinish) {
-        onFinish(this.getFieldsValue());
-      }
+      // 成功的话 执行onFinish
+      onFinish(this.getFiledsValue());
     } else if (err.length > 0) {
-      // 失败 执行onFinishFailed
-      const {onFinishFailed} = this.callbacks;
-      if (onFinishFailed) {
-        onFinishFailed(err);
-      }
+      // ，失败执行onFinishFailed
+      onFinishFailed(err);
     }
   };
 
-  getForm() {
+  getForm = () => {
     return {
       registerField: this.registerField,
-      setCallbacks: this.setCallbacks,
-      setFieldsValue: this.setFieldsValue,
-      getFieldValue: this.getFieldValue,
-      getFieldsValue: this.getFieldsValue,
-      submit: this.submit
+      setCallback: this.setCallback,
+      submit: this.submit,
+      getFiledValue: this.getFiledValue,
+      getFiledsValue: this.getFiledsValue,
+      setFiledsValue: this.setFiledsValue
     };
-  }
+  };
 }
 
 export default function useForm(form) {
@@ -93,7 +93,7 @@ export default function useForm(form) {
   if (form) {
     res = form;
   } else {
-    // new
+    // new 一个
     const formStore = new FormStore();
     res = formStore.getForm();
   }

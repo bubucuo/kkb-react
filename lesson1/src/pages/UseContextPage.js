@@ -1,14 +1,14 @@
-import React, {useState, useEffect, useContext} from "react";
+import React, {useContext} from "react";
 import {ThemeContext, UserContext} from "../Context";
 
 export default function UseContextPage(props) {
-  const themeContext = useContext(ThemeContext);
-  const {themeColor} = themeContext;
-  const userContext = useContext(UserContext);
+  const context = useContext(ThemeContext);
+  const usercontext = useContext(UserContext);
+  console.log("use---", usercontext); //sy-log
   return (
     <div className="border">
-      <h3 className={themeColor}>UseContextPage</h3>
-      <p>{userContext.name}</p>
+      <h3 className={context.themeColor}>UseContextPage</h3>
+      <p>{usercontext.name}</p>
     </div>
   );
 }

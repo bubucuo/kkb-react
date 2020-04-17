@@ -5,21 +5,19 @@ export default class ConsumerPage extends Component {
   render() {
     return (
       <div className="border">
+        <h3>ConsumerPage</h3>
         <ThemeContext.Consumer>
-          {themeContext => (
-            <>
-              <h3 className={themeContext.themeColor}>ConsumerPage</h3>
-              <UserContext.Consumer>
-                {userContext => <HandleUserContext {...userContext} />}
-              </UserContext.Consumer>
-            </>
+          {themeCtx => (
+            <div className={themeCtx.themeColor}>
+              {
+                <UserContext.Consumer>
+                  {user => <div>{user.name}</div>}
+                </UserContext.Consumer>
+              }
+            </div>
           )}
         </ThemeContext.Consumer>
       </div>
     );
   }
-}
-
-function HandleUserContext(userCtx) {
-  return <div>{userCtx.name}</div>;
 }

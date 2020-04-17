@@ -1,8 +1,10 @@
 import React, {Component} from "react";
 import ContextTypePage from "./ContextTypePage";
-import {ThemeContext, UserContext} from "../Context";
 import UseContextPage from "./UseContextPage";
 import ConsumerPage from "./ConsumerPage";
+import {ThemeContext, UserContext} from "../Context";
+
+// const ThemeContext = React.createContext();
 
 export default class ContextPage extends Component {
   constructor(props) {
@@ -16,7 +18,6 @@ export default class ContextPage extends Component {
       }
     };
   }
-
   changeColor = () => {
     const {themeColor} = this.state.theme;
     this.setState({
@@ -25,7 +26,6 @@ export default class ContextPage extends Component {
       }
     });
   };
-
   render() {
     const {theme, user} = this.state;
     return (
@@ -33,13 +33,13 @@ export default class ContextPage extends Component {
         <h3>ContextPage</h3>
         <button onClick={this.changeColor}>change color</button>
         <ThemeContext.Provider value={theme}>
-          <ContextTypePage />
           <UserContext.Provider value={user}>
-            <UseContextPage />
-            <ConsumerPage />
+            <ContextTypePage />
+            {/* <UseContextPage />
+            <ConsumerPage /> */}
           </UserContext.Provider>
         </ThemeContext.Provider>
-        <ContextTypePage />
+        {/* <ContextTypePage /> */}
       </div>
     );
   }

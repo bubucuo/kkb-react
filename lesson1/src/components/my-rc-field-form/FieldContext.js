@@ -1,15 +1,14 @@
 import React from "react";
 
 const warnFunc = () => {
-  console.log("----------err--------"); //sy-log
+  console.log("------warn-----"); //sy-log
 };
 
 const FieldContext = React.createContext({
-  registerField: warnFunc,
-  setFieldsValue: warnFunc,
-  getFieldValue: warnFunc,
-  getFieldsValue: warnFunc,
-  submit: warnFunc
+  submit: warnFunc,
+  getFiledValue: warnFunc,
+  getFiledsValue: warnFunc,
+  setFiledsValue: warnFunc
 });
 
 export default FieldContext;
