@@ -2,6 +2,7 @@ import React, {Component, useEffect} from "react";
 // import Form from "rc-field-form";
 // import Form from "../components/rc-form/index.tsx";
 import Form from "../components/my-rc-form/";
+import Input from "../components/Input";
 
 const {Field, useForm} = Form;
 
@@ -34,10 +35,10 @@ export default class MyFormPage extends Component {
           onFinish={this.onFinish}
           onFinishFailed={this.onFinishFailed}>
           <Field name="username" rules={[nameRules]}>
-            <input placeholder="Username" />
+            <Input placeholder="Username" />
           </Field>
           <Field name="password" rules={[passworRules]}>
-            <input placeholder="Password" />
+            <Input placeholder="Password" value="" />
           </Field>
           <button>Submit</button>
         </Form>
