@@ -153,14 +153,11 @@ export class FormStore {
    * @param pure Only return field which has a `name`. Default: false
    */
   private getFieldEntities = (pure: boolean = false) => {
-    let res;
-    // if (!pure) {
-    res = this.fieldEntities;
-    // return this.fieldEntities;
-    // }
-    // res = this.fieldEntities.filter(field => field.getNamePath().length);
-    return res;
-    // return this.fieldEntities.filter(field => field.getNamePath().length);
+    if (!pure) {
+      return this.fieldEntities;
+    }
+
+    return this.fieldEntities.filter(field => field.getNamePath().length);
   };
 
   private getFieldsMap = (pure: boolean = false) => {
@@ -483,14 +480,14 @@ export class FormStore {
     this.fieldEntities.push(entity);
 
     // Set initial values
-    // if (entity.props.initialValue !== undefined) {
-    //   const prevStore = this.store;
-    //   this.resetWithFieldInitialValue({entities: [entity], skipExist: true});
-    //   this.notifyObservers(prevStore, [entity.getNamePath()], {
-    //     type: "valueUpdate",
-    //     source: "internal"
-    //   });
-    // }
+    if (entity.props.initialValue !== undefined) {
+      const prevStore = this.store;
+      this.resetWithFieldInitialValue({entities: [entity], skipExist: true});
+      this.notifyObservers(prevStore, [entity.getNamePath()], {
+        type: "valueUpdate",
+        source: "internal"
+      });
+    }
 
     // un-register field callback
     return () => {
@@ -530,32 +527,33 @@ export class FormStore {
   };
 
   private updateValue = (name: NamePath, value: StoreValue) => {
-    this.store = {...this.store, [name]: value};
+    const namePath = getNamePath(name);
+    const prevStore = this.store;
+    this.store = setValue(this.store, namePath, value);
 
-    // this.notifyObservers(prevStore, [namePath], {
-    //   type: "valueUpdate",
-    //   source: "internal"
-    // });
+    this.notifyObservers(prevStore, [namePath], {
+      type: "valueUpdate",
+      source: "internal"
+    });
 
     // Notify dependencies children with parent update
-    // const childrenFields = this.getDependencyChildrenFields(namePath);
-    // console.log("childrenFields", childrenFields); //sy-log
-    // this.validateFields(childrenFields);
+    const childrenFields = this.getDependencyChildrenFields(namePath);
+    this.validateFields(childrenFields);
 
-    // this.notifyObservers(prevStore, [], {
-    //   type: "dependenciesUpdate",
-    //   relatedFields: [namePath]
-    // });
+    this.notifyObservers(prevStore, childrenFields, {
+      type: "dependenciesUpdate",
+      relatedFields: [namePath, ...childrenFields]
+    });
 
     // trigger callback function
-    // const {onValuesChange} = this.callbacks;
+    const {onValuesChange} = this.callbacks;
 
-    // if (onValuesChange) {
-    //   const changedValues = cloneByNamePathList(this.store, [namePath]);
-    //   onValuesChange(changedValues, this.store);
-    // }
+    if (onValuesChange) {
+      const changedValues = cloneByNamePathList(this.store, [namePath]);
+      onValuesChange(changedValues, this.store);
+    }
 
-    // this.triggerOnFieldsChange([namePath, ...childrenFields]);
+    this.triggerOnFieldsChange([namePath, ...childrenFields]);
   };
 
   // Let all child Field get update.

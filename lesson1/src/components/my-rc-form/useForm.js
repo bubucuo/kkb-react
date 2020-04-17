@@ -2,7 +2,6 @@ import React, {useState, useEffect, useRef} from "react";
 
 class FormStore {
   constructor(forceUpdate) {
-    // this.forceRootUpdate = forceUpdate;
     this.store = {};
     this.fieldEntities = [];
     this.callbacks = {};
@@ -85,14 +84,16 @@ class FormStore {
   submit = () => {
     const {onFinish, onFinishFailed} = this.callbacks;
     const err = this.validateFields();
-    if (err.length) {
+    if (err.length === 0) {
+      if (onFinish) {
+        onFinish(this.getFieldsValue());
+      }
+    } else if (err.length > 0) {
       if (onFinishFailed) {
         onFinishFailed(err);
       }
     } else {
-      if (onFinish) {
-        onFinish(this.getFieldsValue());
-      }
+      console.log("未定义onFinish或者onFinishFailed");
     }
   };
 }
