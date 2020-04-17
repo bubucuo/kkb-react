@@ -1,12 +1,9 @@
 import React, {Component, useEffect} from "react";
-import Form from "../components/Form/";
+// import Form from "rc-field-form";
 // import Form from "../components/rc-form/index.tsx";
+import Form from "../components/my-rc-form/";
 
 const {Field, useForm} = Form;
-
-// import Form, {Field, useForm} from "rc-field-form";
-
-// const Field = Form.Item;
 
 const nameRules = {required: true, message: "请输入姓名！"};
 const passworRules = {required: true, message: "请输入密码！"};
@@ -73,10 +70,10 @@ export default function MyFormPage(props) {
     console.log("onFinish", val); //sy-log
   };
 
-  const onValuesChange = (changedValues, values) => {
-    console.log("onValuesChange", changedValues, values); //sy-log
-    // this.formRef.current.resetFields();
-  };
+  // const onValuesChange = (changedValues, values) => {
+  //   console.log("onValuesChange", changedValues, values); //sy-log
+  //   // this.formRef.current.resetFields();
+  // };
 
   const onFinishFailed = err => {
     console.log("onFinishFailed", err); //sy-log
@@ -94,7 +91,7 @@ export default function MyFormPage(props) {
     <Form
       form={form}
       onFinish={onFinish}
-      onValuesChange={onValuesChange}
+      // onValuesChange={onValuesChange}
       onFinishFailed={onFinishFailed}>
       <Field name="username" rules={[nameRules]}>
         <input placeholder="Username" />
