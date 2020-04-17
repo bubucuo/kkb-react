@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from "react";
+import {useRef} from "react";
 
 class FormStore {
   constructor(forceUpdate) {
@@ -46,7 +46,6 @@ class FormStore {
     // 更新对应的field entity
     for (let i = 0; i < this.fieldEntities.length; i++) {
       let entity = this.fieldEntities[i];
-      let newStoreKeys = Object.keys(newStore);
       Object.keys(newStore).forEach(key => {
         if (entity.props.name === key) {
           entity.onStoreChange();

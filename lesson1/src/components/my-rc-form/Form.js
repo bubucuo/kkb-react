@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React from "react";
 import useForm from "./useForm";
 import FieldContext from "./FieldContext";
 
