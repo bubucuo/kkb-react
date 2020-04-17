@@ -1,4 +1,4 @@
-import React, {Component, useEffect} from "react";
+import React, {Component, useRef, useEffect} from "react";
 import {Form, Input, Button} from "antd";
 
 const FormItem = Form.Item;
@@ -7,46 +7,42 @@ const nameRules = {required: true, message: "请输入姓名！"};
 const passworRules = {required: true, message: "请输入密码！"};
 
 // export default class AntdFormPage extends Component {
-//   formRef = React.createRef();
-
-//   componentDidMount() {
-//     this.formRef.current.setFieldsValue({name: "default"});
+//   constructor(props) {
+//     super(props);
+//     this.formRef = React.createRef();
 //   }
 
-//   onReset = () => {
-//     this.formRef.current.resetFields();
-//   };
+//   componentDidMount() {
+//     console.log("this.formRef.current ", this.formRef.current); //sy-log
+//     // 填充默认值
+//     this.formRef.current.setFieldsValue({username: "default"});
+//   }
+//   // 表单校验通过之后执行
 //   onFinish = val => {
 //     console.log("onFinish", val); //sy-log
 //   };
+
+//   // 表单校验失败执行
 //   onFinishFailed = val => {
 //     console.log("onFinishFailed", val); //sy-log
 //   };
-
 //   render() {
-//     console.log("AntdFormPage render", this.formRef.current); //sy-log
 //     return (
 //       <div>
 //         <h3>AntdFormPage</h3>
 //         <Form
 //           ref={this.formRef}
 //           onFinish={this.onFinish}
-//           onFinishFailed={this.onFinishFailed}
-//           onReset={this.onReset}>
-//           <FormItem label="姓名" name="name" rules={[nameRules]}>
-//             <Input placeholder="name input placeholder" />
+//           onFinishFailed={this.onFinishFailed}>
+//           <FormItem name="username" label="username" rules={[nameRules]}>
+//             <Input placeholder="input placeholder" />
 //           </FormItem>
-//           <FormItem label="密码" name="password" rules={[passworRules]}>
-//             <Input placeholder="password input placeholder" />
+//           <FormItem name="password" label="password" rules={[passworRules]}>
+//             <Input placeholder="input placeholder" />
 //           </FormItem>
 //           <FormItem>
 //             <Button type="primary" size="large" htmlType="submit">
 //               Submit
-//             </Button>
-//           </FormItem>
-//           <FormItem>
-//             <Button type="default" size="large" htmlType="reset">
-//               Reset
 //             </Button>
 //           </FormItem>
 //         </Form>
@@ -56,42 +52,37 @@ const passworRules = {required: true, message: "请输入密码！"};
 // }
 
 export default function AntdFormPage(props) {
+  const [form] = Form.useForm();
+
   const onFinish = val => {
     console.log("onFinish", val); //sy-log
   };
+
+  // 表单校验失败执行
   const onFinishFailed = val => {
     console.log("onFinishFailed", val); //sy-log
   };
-  const onReset = () => {
-    form.resetFields();
-  };
-  const [form] = Form.useForm();
+
   useEffect(() => {
-    form.setFieldsValue({name: "default"});
+    form.setFieldsValue({username: "default"});
   }, []);
 
   return (
-    <Form
-      form={form}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-      onReset={onReset}>
-      <FormItem label="姓名" name="name" rules={[nameRules]}>
-        <Input placeholder="name input placeholder" />
-      </FormItem>
-      <FormItem label="密码" name="password" rules={[passworRules]}>
-        <Input placeholder="password input placeholder" />
-      </FormItem>
-      <FormItem>
-        <Button type="primary" size="large" htmlType="submit">
-          Submit
-        </Button>
-      </FormItem>
-      <FormItem>
-        <Button type="default" size="large" htmlType="reset">
-          Reset
-        </Button>
-      </FormItem>
-    </Form>
+    <div>
+      <h3>AntdFormPage</h3>
+      <Form form={form} onFinish={onFinish} onFinishFailed={onFinishFailed}>
+        <FormItem name="username" label="username" rules={[nameRules]}>
+          <Input placeholder="input placeholder" />
+        </FormItem>
+        <FormItem name="password" label="password" rules={[passworRules]}>
+          <Input placeholder="input placeholder" />
+        </FormItem>
+        <FormItem>
+          <Button type="primary" size="large" htmlType="submit">
+            Submit
+          </Button>
+        </FormItem>
+      </Form>
+    </div>
   );
 }

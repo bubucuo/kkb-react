@@ -1,8 +1,8 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import useForm from "./useForm";
 import FieldContext from "./FieldContext";
 
-export default function Form({form, onFinish, onFinishFailed, children}, ref) {
+export default function Form({children, form, onFinish, onFinishFailed}, ref) {
   const [formInstance] = useForm(form);
 
   React.useImperativeHandle(ref, () => formInstance);
@@ -11,7 +11,6 @@ export default function Form({form, onFinish, onFinishFailed, children}, ref) {
     onFinish,
     onFinishFailed
   });
-
   return (
     <form
       onSubmit={event => {
