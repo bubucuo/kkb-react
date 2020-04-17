@@ -1,4 +1,9 @@
-const {override, fixBabelImports, addLessLoader} = require("customize-cra");
+const {
+  override,
+  fixBabelImports,
+  addLessLoader,
+  addDecoratorsLegacy
+} = require("customize-cra");
 
 module.exports = override(
   fixBabelImports("import", {
@@ -14,5 +19,6 @@ module.exports = override(
       "@border-color-base": "green",
       "@link-color": "orange"
     }
-  })
+  }),
+  addDecoratorsLegacy() //配置装饰器
 );

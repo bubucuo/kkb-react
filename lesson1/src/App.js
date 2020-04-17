@@ -1,11 +1,11 @@
 import React from "react";
-// import FormPage from "./pages/FormPage";
+import AntdFormPage from "./pages/AntdFormPage";
 import MyFormPage from "./pages/MyFormPage";
 
 export default function App(props) {
   return (
     <div>
-      {/* <FormPage /> */}
+      {/* <AntdFormPage /> */}
       <MyFormPage />
     </div>
   );
