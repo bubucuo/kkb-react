@@ -1,18 +1,19 @@
 export default function applyMiddleware(...middlewares) {
   return createStore => reducer => {
-    const store = createStore(reducer);
+    let store = createStore(reducer);
     let dispatch = store.dispatch;
 
     const midApi = {
       getState: store.getState,
       dispatch: (action, ...args) => dispatch(action, ...args)
     };
-    const middlewareChain = middlewares.map(middleware => middleware(midApi));
+    const middlewareChain = middlewares.map(md => md(midApi));
 
     dispatch = compose(...middlewareChain)(store.dispatch);
+
     return {
       ...store,
-      // 加强版的dispatch
+      // 加强dispatch， 比如说能够接受function promise
       dispatch
     };
   };
@@ -25,5 +26,7 @@ function compose(...funcs) {
   if (funcs.length === 1) {
     return funcs[0];
   }
-  return funcs.reduce((a, b) => (...args) => a(b(...args)));
+  return funcs.reduce((a, b) => (...args) => {
+    return a(b(...args));
+  });
 }

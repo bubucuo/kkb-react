@@ -3,26 +3,32 @@ export default function createStore(reducer, enhancer) {
     return enhancer(createStore)(reducer);
   }
   let currentState;
-  let currentListeners = [];
+  let curerntListeners = [];
 
+  // 获取store的state
   function getState() {
     return currentState;
   }
 
+  // 更改store
   function dispatch(action) {
+    // store里面数据就更新了
     currentState = reducer(currentState, action);
-    currentListeners.forEach(listener => listener());
-    return action;
+
+    // 执行订阅事件
+    curerntListeners.forEach(listener => listener());
   }
 
   function subscribe(listener) {
-    currentListeners.push(listener);
+    curerntListeners.push(listener);
+
     return () => {
-      currentListeners = [];
+      curerntListeners = [];
     };
   }
 
-  dispatch({type: "KKBREDUX/OOOO"});
+  // 初始化
+  dispatch({type: "KKKKKK/REDUX"});
 
   return {
     getState,
