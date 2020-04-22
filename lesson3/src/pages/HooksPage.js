@@ -1,13 +1,23 @@
-import React, {useReducer, useEffect, useLayoutEffect} from "react";
-import {counterReducer} from "../store";
+import React, {
+  useReducer,
+  useCallback,
+  useEffect,
+  useLayoutEffect
+} from "react";
+import {counterReducer} from "../store/";
 
 const init = initArg => {
   return initArg + 1;
 };
 
 export default function HooksPage(props) {
-  const [state, dispatch] = useReducer(counterReducer, 100, init);
-  let a = 0;
+  const [state, dispatch] = useReducer(counterReducer, 0, init);
+
+  const add = useCallback(() => {
+    dispatch({
+      type: "ADD"
+    });
+  }, []);
 
   useEffect(() => {
     console.log("useEffect"); //sy-log
@@ -22,9 +32,9 @@ export default function HooksPage(props) {
   return (
     <div>
       <h3>HooksPage</h3>
-      <p>{a}</p>
       <p>{state}</p>
-      <button onClick={() => dispatch({type: "ADD", payload: 100})}>add</button>
+
+      <button onClick={add}>add</button>
     </div>
   );
 }
