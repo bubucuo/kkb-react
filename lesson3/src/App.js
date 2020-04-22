@@ -1,14 +1,21 @@
 import React from "react";
-import ReactReduxPage from "./pages/ReactReduxPage";
-import ReactReduxHookPage from "./pages/ReactReduxHookPage";
 import HooksPage from "./pages/HooksPage";
+import ReactRedxuPage from "./pages/ReactRedxuPage";
+import ReactReduxHookPage from "./pages/ReactReduxHookPage";
+import RouteComponePage from "./pages/RouteComponePage";
 
 export default function App(props) {
   return (
     <div>
-      {/* <ReactReduxPage /> */}
+      {/* <HooksPage /> */}
+
+      {/* <ReactRedxuPage /> */}
+
       {/* <ReactReduxHookPage /> */}
-      <HooksPage />
+
+      {/* <ReactRouterPage /> */}
+
+      <RouteComponePage />
     </div>
   );
 }
