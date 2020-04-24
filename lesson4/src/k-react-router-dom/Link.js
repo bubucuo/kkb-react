@@ -6,6 +6,7 @@ export default class Link extends Component {
   handleClick = event => {
     const {history} = this.context;
     event.preventDefault();
+    // 跳转
     history.push(this.props.to);
   };
   render() {

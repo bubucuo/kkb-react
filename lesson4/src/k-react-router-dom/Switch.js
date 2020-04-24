@@ -1,4 +1,4 @@
-import React, {Component, isValidElement} from "react";
+import React, {Component, cloneElement} from "react";
 import {RouterContext} from "./Context";
 import matchPath from "./matchPath";
 
@@ -7,9 +7,10 @@ export default class Switch extends Component {
     return (
       <RouterContext.Consumer>
         {context => {
-          const {location} = context;
+          // match 是是否匹配
+          // element 如果匹配的话，返回这个元素
           let match, element;
-          // children element | array
+          const {location} = context;
           React.Children.forEach(this.props.children, child => {
             if (match == null && React.isValidElement(child)) {
               element = child;

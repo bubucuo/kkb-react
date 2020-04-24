@@ -1,17 +1,4 @@
 import React, {Component} from "react";
-// import {
-//   BrowserRouter as Router,
-//   Route,
-//   Link,
-//   Switch,
-//   useHistory,
-//   useLocation,
-//   useRouteMatch,
-//   useParams,
-//   withRouter,
-//   Prompt
-// } from "react-router-dom";
-
 import {
   BrowserRouter as Router,
   Route,
@@ -21,8 +8,21 @@ import {
   useLocation,
   useRouteMatch,
   useParams,
-  withRouter
-} from "./k-react-router-dom";
+  withRouter,
+  Prompt
+} from "react-router-dom";
+
+// import {
+//   BrowserRouter as Router,
+//   Route,
+//   Link,
+//   Switch,
+//   useHistory,
+//   useLocation,
+//   useRouteMatch,
+//   useParams,
+//   withRouter
+// } from "./k-react-router-dom";
 
 import HomePage from "./pages/HomePage";
 import UserPage from "./pages/UserPage";
@@ -37,7 +37,7 @@ export default function App(props) {
         <Link to="/">首页</Link>
         <Link to="/user">用户中心</Link>
         <Link to="/login">登录</Link>
-        <Link to="/product/123">产品</Link>
+        <Link to="/product/123">商品</Link>
 
         <Switch>
           <Route
@@ -47,13 +47,13 @@ export default function App(props) {
             component={HomePage}
             // render={() => <h1>render</h1>}
           />
-          {/* <Route path="/user" component={UserPage}> */}
-          {/* <div>userpage</div> */}
-          {/* </Route> */}
+
           <PrivateRoute path="/user" component={UserPage} />
+          {/* <Route path="/user" component={UserPage}>
+            {/* <div>userpage</div> */}
+          {/* </Route> */}
           <Route path="/login" component={LoginPage} />
           <Route path="/product/:id" render={() => <Product />} />
-
           <Route component={_404Page} />
         </Switch>
       </Router>
@@ -62,15 +62,17 @@ export default function App(props) {
 }
 
 // function Product(props) {
+//   // const {match} = props;
 //   const history = useHistory();
 //   const location = useLocation();
 //   const match = useRouteMatch();
 //   const params = useParams();
+//   const {id} = match.params;
 
-//   console.log("Product", history, location, match, params); //sy-log
+//   console.log("props", history, location, match, params); //sy-log
 //   return (
 //     <div>
-//       <h1>Product</h1>
+//       <h1>Product-{id}</h1>
 //     </div>
 //   );
 // }
@@ -85,18 +87,15 @@ class Product extends Component {
     console.log("Product", this.props); //sy-log
     return (
       <div>
-        <h3>Product</h3>
-        <button onClick={() => this.setState({confirm: !this.state.confirm})}>
+        <h1>Product</h1>
+        <button
+          onClick={() => {
+            this.setState({confirm: !this.state.confirm});
+          }}>
           change
         </button>
         <Link to="/">go home</Link>
-        {/* <Prompt
-          when={this.state.confirm}
-          message="Are you sure you want to leave?"
-          // message={location => {
-          //   return "Are you sure you want to leave-fun";
-          // }}
-        /> */}
+        <Prompt when={this.state.confirm} message="你确定要离开吗？" />
       </div>
     );
   }

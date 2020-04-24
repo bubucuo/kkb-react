@@ -1,11 +1,11 @@
 import React from "react";
 import {RouterContext} from "./Context";
 
-const withRouter = Component => props => {
+const withRouter = Compoent => props => {
   return (
     <RouterContext.Consumer>
       {context => {
-        return <Component {...props} {...context} />;
+        return <Compoent {...props} {...context} />;
       }}
     </RouterContext.Consumer>
   );

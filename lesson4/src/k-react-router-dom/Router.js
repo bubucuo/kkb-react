@@ -1,16 +1,22 @@
 import React, {Component} from "react";
-import {createBrowserHistory} from "history";
 import {RouterContext} from "./Context";
 
 export default class Router extends Component {
   static computeRootMatch(pathname) {
-    return {path: "", url: "/", params: {}, isExact: pathname === "/"};
+    return {
+      path: "/",
+      url: "/",
+      params: {},
+      isExact: pathname === "/"
+    };
   }
   constructor(props) {
     super(props);
     this.state = {
       location: props.history.location
     };
+
+    // 监听location变化
     this.unlisten = props.history.listen(location => {
       this.setState({location});
     });
@@ -21,15 +27,17 @@ export default class Router extends Component {
       this.unlisten();
     }
   }
+
   render() {
+    const {children, history} = this.props;
     return (
       <RouterContext.Provider
         value={{
-          history: this.props.history,
+          history,
           location: this.state.location,
           match: Router.computeRootMatch(this.state.location.pathname)
         }}>
-        {this.props.children}
+        {children}
       </RouterContext.Provider>
     );
   }

@@ -6,8 +6,8 @@ export default class Redirect extends Component {
     return (
       <RouterContext.Consumer>
         {context => {
-          const {history} = context;
-          const {to, push = false} = this.props;
+          const {history, push = false} = context;
+          const {to} = this.props;
           return (
             <LifeCycle
               onMount={() => {
@@ -24,7 +24,7 @@ export default class Redirect extends Component {
 class LifeCycle extends Component {
   componentDidMount() {
     if (this.props.onMount) {
-      this.props.onMount.call(this, this);
+      this.props.onMount();
     }
   }
   render() {

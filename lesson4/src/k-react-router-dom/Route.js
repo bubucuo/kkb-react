@@ -8,8 +8,7 @@ export default class Route extends Component {
       <RouterContext.Consumer>
         {context => {
           const {location} = context;
-
-          const {computedMatch, path, children, component, render} = this.props;
+          const {path, computedMatch, children, component, render} = this.props;
           const match = computedMatch
             ? computedMatch
             : path
@@ -19,8 +18,10 @@ export default class Route extends Component {
             ...context,
             match
           };
-          // match 按照互斥规则 优先渲染顺序为children component render null，children如果是function执行function，是节点直接渲染
-          // 不match children 或者null （只渲染function）
+
+          // match 按照互斥规则 渲染优先顺序为children component render 或者null，（如果children是function，执行function，是节点直接显示）
+          // 不match chidlren 或者null（只渲染function）
+
           return (
             <RouterContext.Provider value={props}>
               {match
