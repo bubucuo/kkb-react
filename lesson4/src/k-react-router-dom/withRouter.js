@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React from "react";
 import {RouterContext} from "./Context";
 
 const withRouter = Component => props => {

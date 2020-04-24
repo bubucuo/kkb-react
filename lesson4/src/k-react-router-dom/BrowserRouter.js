@@ -10,6 +10,6 @@ export default class BrowserRouter extends Component {
   }
 
   render() {
-    return <Router history={this.history}>{this.props.children}</Router>;
+    return <Router history={this.history} children={this.props.children} />;
   }
 }

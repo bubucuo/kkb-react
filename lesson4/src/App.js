@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Component} from "react";
 // import {
 //   BrowserRouter as Router,
 //   Route,
@@ -8,8 +8,10 @@ import React from "react";
 //   useLocation,
 //   useRouteMatch,
 //   useParams,
-//   withRouter
+//   withRouter,
+//   Prompt
 // } from "react-router-dom";
+
 import {
   BrowserRouter as Router,
   Route,
@@ -20,22 +22,22 @@ import {
   useRouteMatch,
   useParams,
   withRouter
-} from "./k-react-router-dom/";
+} from "./k-react-router-dom";
 
 import HomePage from "./pages/HomePage";
 import UserPage from "./pages/UserPage";
 import _404Page from "./pages/_404Page";
-import PrivateRoute from "./pages/PrivateRoute";
 import LoginPage from "./pages/LoginPage";
+import PrivateRoute from "./pages/PrivateRoute";
 
 export default function App(props) {
   return (
-    <div>
+    <div className="app">
       <Router>
         <Link to="/">首页</Link>
         <Link to="/user">用户中心</Link>
         <Link to="/login">登录</Link>
-        <Link to="/product/123">商品</Link>
+        <Link to="/product/123">产品</Link>
 
         <Switch>
           <Route
@@ -45,13 +47,13 @@ export default function App(props) {
             component={HomePage}
             // render={() => <h1>render</h1>}
           />
-
-          {/* <Route path="/user" component={UserPage}>
-            <div>userChildren</div>
-          </Route> */}
+          {/* <Route path="/user" component={UserPage}> */}
+          {/* <div>userpage</div> */}
+          {/* </Route> */}
           <PrivateRoute path="/user" component={UserPage} />
           <Route path="/login" component={LoginPage} />
           <Route path="/product/:id" render={() => <Product />} />
+
           <Route component={_404Page} />
         </Switch>
       </Router>
@@ -59,32 +61,42 @@ export default function App(props) {
   );
 }
 
-function Product(props) {
-  const history = useHistory();
-  const location = useLocation();
-  const match = useRouteMatch();
-  const params = useParams();
+// function Product(props) {
+//   const history = useHistory();
+//   const location = useLocation();
+//   const match = useRouteMatch();
+//   const params = useParams();
 
-  console.log("history", history); //sy-log
-  console.log("location", location); //sy-log
-  console.log("match", match); //sy-log
-  console.log("params", params); //sy-log
-
-  return (
-    <div>
-      <h3>Product</h3>
-      <Detail />
-    </div>
-  );
-}
+//   console.log("Product", history, location, match, params); //sy-log
+//   return (
+//     <div>
+//       <h1>Product</h1>
+//     </div>
+//   );
+// }
 
 @withRouter
-class Detail extends React.Component {
+class Product extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {confirm: true};
+  }
   render() {
-    console.log("detail", this.props); //sy-log
+    console.log("Product", this.props); //sy-log
     return (
       <div>
-        <h1>Detail</h1>
+        <h3>Product</h3>
+        <button onClick={() => this.setState({confirm: !this.state.confirm})}>
+          change
+        </button>
+        <Link to="/">go home</Link>
+        {/* <Prompt
+          when={this.state.confirm}
+          message="Are you sure you want to leave?"
+          // message={location => {
+          //   return "Are you sure you want to leave-fun";
+          // }}
+        /> */}
       </div>
     );
   }

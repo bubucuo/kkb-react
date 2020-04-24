@@ -1,27 +1,31 @@
-import React from "react";
+import React, {Component} from "react";
 import {RouterContext} from "./Context";
 
-export default function Redirect({to}) {
-  return (
-    <RouterContext.Consumer>
-      {context => {
-        const {history} = context;
-        // history.push(to);
-        return (
-          <LifeCycle
-            onMount={() => {
-              history.replace(to);
-            }}
-          />
-        );
-      }}
-    </RouterContext.Consumer>
-  );
+export default class Redirect extends Component {
+  render() {
+    return (
+      <RouterContext.Consumer>
+        {context => {
+          const {history} = context;
+          const {to, push = false} = this.props;
+          return (
+            <LifeCycle
+              onMount={() => {
+                push ? history.push(to) : history.replace(to);
+              }}
+            />
+          );
+        }}
+      </RouterContext.Consumer>
+    );
+  }
 }
 
-class LifeCycle extends React.Component {
+class LifeCycle extends Component {
   componentDidMount() {
-    this.props.onMount.call(this, this);
+    if (this.props.onMount) {
+      this.props.onMount.call(this, this);
+    }
   }
   render() {
     return null;

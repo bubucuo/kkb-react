@@ -4,7 +4,6 @@ import Route from "./Route";
 import Switch from "./Switch";
 import Redirect from "./Redirect";
 import withRouter from "./withRouter";
-
 import {useHistory, useLocation, useRouteMatch, useParams} from "./hooks";
 
 export {
@@ -13,9 +12,9 @@ export {
   Route,
   Switch,
   Redirect,
+  withRouter,
   useHistory,
   useLocation,
   useRouteMatch,
-  useParams,
-  withRouter
+  useParams
 };
