@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {RouterContext} from "./Context";
+import LifeCycle from "./LifeCycle";
 
 export default class Redirect extends Component {
   render() {
@@ -18,16 +19,5 @@ export default class Redirect extends Component {
         }}
       </RouterContext.Consumer>
     );
-  }
-}
-
-class LifeCycle extends Component {
-  componentDidMount() {
-    if (this.props.onMount) {
-      this.props.onMount();
-    }
-  }
-  render() {
-    return null;
   }
 }

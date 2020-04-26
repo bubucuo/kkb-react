@@ -5,6 +5,7 @@ import Switch from "./Switch";
 import Redirect from "./Redirect";
 import withRouter from "./withRouter";
 import {useHistory, useLocation, useRouteMatch, useParams} from "./hooks";
+import Prompt from "./Prompt";
 
 export {
   BrowserRouter,
@@ -16,5 +17,6 @@ export {
   useHistory,
   useLocation,
   useRouteMatch,
-  useParams
+  useParams,
+  Prompt
 };
