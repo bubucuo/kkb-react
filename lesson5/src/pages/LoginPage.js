@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {Redirect} from "react-router-dom/";
 import {connect} from "react-redux";
+import {LOGIN_SUCCESS} from "../action/const";
 import {login} from "../action/user";
 
 export default connect(
@@ -18,8 +19,9 @@ export default connect(
     nameChange = event => {
       this.setState({name: event.target.value});
     };
+
     render() {
-      const {isLogin, loading, location, login, err} = this.props;
+      const {isLogin, location, login, loading, err} = this.props;
       const {redirect = "/"} = location.state || {};
       if (isLogin) {
         return <Redirect to={redirect} />;

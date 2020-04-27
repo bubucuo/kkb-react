@@ -30,6 +30,9 @@ const menu = [
 ];
 
 export default class BottomNav extends Component {
+  componentWillUnmount() {
+    console.log("BottomNav componentWillUnmount"); //sy-log
+  }
   render() {
     return (
       <ul className="bottomNav">

@@ -1,13 +1,15 @@
 import React from "react";
 import {BrowserRouter as Router, Route, Link, Switch} from "react-router-dom";
+
 import HomePage from "../pages/HomePage";
 import UserPage from "../pages/UserPage";
 import _404Page from "../pages/_404Page";
 import LoginPage from "../pages/LoginPage";
 import PrivateRoute from "../pages/PrivateRoute";
-import BottomNav from "../components/BottomNav";
 
-export const routes = [
+import BottomNav from "../components/BottomNav/";
+
+const routes = [
   {
     path: "/",
     exact: true,
@@ -23,7 +25,7 @@ export const routes = [
     component: LoginPage
   },
   {
-    component: _404Page
+    component: HomePage
   }
 ];
 

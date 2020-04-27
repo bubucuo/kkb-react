@@ -1,5 +1,4 @@
 import React, {Component} from "react";
-import Routes from "./routes/";
 import {BrowserRouter as Router, Route, Link, Switch} from "react-router-dom";
 
 import HomePage from "./pages/HomePage";
@@ -7,6 +6,8 @@ import UserPage from "./pages/UserPage";
 import _404Page from "./pages/_404Page";
 import LoginPage from "./pages/LoginPage";
 import PrivateRoute from "./pages/PrivateRoute";
+
+import Routes from "./routes/";
 
 export default function App(props) {
   return (

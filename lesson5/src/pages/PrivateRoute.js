@@ -2,6 +2,7 @@ import React from "react";
 import {Route, Redirect} from "react-router-dom/";
 import {connect} from "react-redux";
 
+// connect 连接组件和store
 export default connect(({user}) => ({isLogin: user.isLogin}))(
   function PrivateRoute({isLogin, component: Component, ...rest}) {
     return (
