@@ -5,15 +5,15 @@ import LoginService from "../service/login";
 //   type: LOGIN_SUCCESS
 // });
 
-export function login(userInfo) {
-  return async function(dispatch) {
-    dispatch({type: REQUEST});
-    const res1 = await loginPromise(dispatch, userInfo);
-    if (res1) {
-      getMoreUserInfo(dispatch, res1);
-    }
-  };
-}
+// export function login(userInfo) {
+//   return async function(dispatch) {
+//     dispatch({type: REQUEST});
+//     const res1 = await loginPromise(dispatch, userInfo);
+//     if (res1) {
+//       getMoreUserInfo(dispatch, res1);
+//     }
+//   };
+// }
 
 // 嵌套
 // export const login = userInfo => dispatch => {
@@ -61,4 +61,10 @@ const getMoreUserInfo = (dispatch, userInfo) => {
 
 export const logout = () => ({
   type: LOGOUT_SUCCESS
+});
+
+// saga
+export const login = userInfo => ({
+  type: "loginSaga",
+  payload: userInfo
 });
