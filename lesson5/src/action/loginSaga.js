@@ -5,6 +5,7 @@ import LoginService from "../service/login";
 // worker saga
 
 function* loginHandle(action) {
+  yield put({type: REQUEST});
   try {
     const res1 = yield call(LoginService.login, action.payload);
     const res2 = yield call(LoginService.getMoreUserInfo, res1);
