@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import Routes from "./routes/";
 import {BrowserRouter as Router, Route, Link, Switch} from "react-router-dom";
 
 import HomePage from "./pages/HomePage";
@@ -10,7 +11,8 @@ import PrivateRoute from "./pages/PrivateRoute";
 export default function App(props) {
   return (
     <div className="app">
-      <Router>
+      <Routes />
+      {/* <Router>
         <Link to="/">首页</Link>
         <Link to="/user">用户中心</Link>
         <Link to="/login">登录</Link>
@@ -21,7 +23,7 @@ export default function App(props) {
           <PrivateRoute path="/user" component={UserPage} />
           <Route component={_404Page} />
         </Switch>
-      </Router>
+      </Router> */}
     </div>
   );
 }

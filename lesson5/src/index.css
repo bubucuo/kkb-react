@@ -12,6 +12,16 @@ code {
     monospace;
 }
 
+* {
+  margin: 0;
+  padding: 0;
+}
+
+ul,
+li {
+  list-style: none;
+}
+
 #root {
   padding: 10px;
 }
@@ -20,6 +30,11 @@ code {
   margin: 10px;
   padding: 10px;
   border: solid 1px red;
+}
+
+input,
+button {
+  border: solid 1px black;
 }
 
 .red {

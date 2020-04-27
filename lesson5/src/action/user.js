@@ -1,4 +1,10 @@
-import {LOGIN_SUCCESS, LOGIN_FAILURE, LOGOUT_SUCCESS, REQUEST} from "./const";
+import {
+  LOGIN_SUCCESS,
+  LOGIN_FAILURE,
+  LOGOUT_SUCCESS,
+  REQUEST,
+  LOGIN_SAGA
+} from "./const";
 import LoginService from "../service/login";
 
 // export const login = () => ({
@@ -65,6 +71,6 @@ export const logout = () => ({
 
 // saga
 export const login = userInfo => ({
-  type: "loginSaga",
+  type: LOGIN_SAGA,
   payload: userInfo
 });
