@@ -33,31 +33,31 @@ import LoginService from "../service/login";
 //   );
 // };
 
-export const loginPromise = (dispatch, userInfo) => {
-  return LoginService.login(userInfo).then(
-    res => {
-      return res;
-    },
-    err => {
-      dispatch({type: LOGIN_FAILURE, payload: err});
-    }
-  );
-};
+// export const loginPromise = (dispatch, userInfo) => {
+//   return LoginService.login(userInfo).then(
+//     res => {
+//       return res;
+//     },
+//     err => {
+//       dispatch({type: LOGIN_FAILURE, payload: err});
+//     }
+//   );
+// };
 
-const getMoreUserInfo = (dispatch, userInfo) => {
-  return LoginService.getMoreUserInfo(userInfo).then(
-    res => {
-      dispatch({
-        type: LOGIN_SUCCESS,
-        payload: {...userInfo, ...res}
-      });
-      return res;
-    },
-    err => {
-      dispatch({type: LOGIN_FAILURE, payload: err});
-    }
-  );
-};
+// const getMoreUserInfo = (dispatch, userInfo) => {
+//   return LoginService.getMoreUserInfo(userInfo).then(
+//     res => {
+//       dispatch({
+//         type: LOGIN_SUCCESS,
+//         payload: {...userInfo, ...res}
+//       });
+//       return res;
+//     },
+//     err => {
+//       dispatch({type: LOGIN_FAILURE, payload: err});
+//     }
+//   );
+// };
 
 export const logout = () => ({
   type: LOGOUT_SUCCESS
