@@ -24,6 +24,7 @@ export default connect(({ user }: ConnectState) => ({ user }))(
     }, []);
 
     const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] => {
+      console.log('menuList', menuList); //sy-log
       return menuList.map(item => {
         const localItem = {
           ...item,

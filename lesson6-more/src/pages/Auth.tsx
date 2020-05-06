@@ -19,7 +19,7 @@ export default (props: AuthProps) => {
   const location: Location = useLocation();
   let match: boolean = true;
   if (location.pathname === '/more') {
-    match = user.currentUser.role === 'vip';
+    match = user.currentUser.role === '__vip';
   }
   return match ? (
     children

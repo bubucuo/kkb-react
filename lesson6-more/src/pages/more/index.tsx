@@ -36,17 +36,17 @@ export default () => {
     <PageHeaderWrapper>
       <ProTable
         rowKey="id"
-        headerTitle="查询更多"
         columns={columns}
         pagination={{
           current: 1,
           pageSize: 10,
         }}
         request={params => {
-          console.log('分页数据', params); //sy-log
+          console.log('params', params); //sy-log
           return getChannelData(params);
         }}
       />
+
       <Card>
         <Link to="/product/123">产品123</Link>
       </Card>
