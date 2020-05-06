@@ -4,6 +4,7 @@
 import React from "./kreact/";
 import ReactDOM from "./kreact/react-dom";
 import Component from "./kreact/Component";
+
 import "./index.css";
 
 class ClassComponent extends Component {
@@ -16,15 +17,15 @@ function FunctionComponent({name}) {
   return (
     <div className="border">
       {name}
-      <button onClick={() => console.log("omg")}>click</button>
+      <button onClick={() => console.log("omg")}>btn</button>
     </div>
   );
 }
 
 const jsx = (
   <div className="border">
-    <p>开课吧</p>
-    <a href="https://kaikeba.com/">开课吧</a>
+    <p>全栈学习</p>
+    <a href="https://zh-hans.reactjs.org/">React学习</a>
     <FunctionComponent name="函数组件" />
     <ClassComponent name="class组件" />
 
@@ -33,23 +34,31 @@ const jsx = (
       <h2>文本2</h2>
     </>
 
-    {[1, 2, 3].map(item => (
-      <div key={item}>文本{item}</div>
-      // <React.Fragment key={item}>
-      //   <h1>文本1</h1>
-      //   <h2>文本2</h2>
-      // </React.Fragment>
-    ))}
+    {/* {[1, 2, 3].map(item => (
+      <div key={item}>
+        {item}
+        <h6>文本{item}</h6>
+      </div>
+    ))} */}
   </div>
 );
 
+// <React.Fragment key={item}>
+//   {item}
+//   <h6>文本{item}</h6>
+// </React.Fragment>
+
+// vnode->node , 把node装入container
 ReactDOM.render(jsx, document.getElementById("root"));
 
 console.log("version", React.version); //sy-log
 
+// vnode  虚拟dom节点
+// node 真实dom节点
 // !节点类型
 // 文本节点
 // HTML标签节点
 // function组件
 // class组件
 // fragment
+// 数组
