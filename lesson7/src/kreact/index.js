@@ -5,9 +5,14 @@ function createElement(type, props, ...children) {
     delete props.__self;
     delete props.__source;
   }
+  let defaultProps = {};
+  if (type && type.defaultProps) {
+    defaultProps = {...type.defaultProps};
+  }
   return {
     type,
     props: {
+      ...defaultProps,
       ...props,
       children: children.map(child =>
         typeof child === "object" ? child : createTextNode(child)

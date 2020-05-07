@@ -19,7 +19,7 @@ function createNode(vnode, parentNode) {
     node = document.createElement(type);
   } else if (typeof type === "function") {
     // function class
-    node = type.isReactComponent
+    node = type.prototype.isReactComponent
       ? updateClassComponent(vnode, parentNode)
       : updateFunctionComponent(vnode, parentNode);
   } else if (type === undefined) {
@@ -33,7 +33,14 @@ function createNode(vnode, parentNode) {
 
 function reconcileChildren(children, node) {
   for (let i = 0; i < children.length; i++) {
-    render(children[i], node);
+    let child = children[i];
+    if (Array.isArray(child)) {
+      for (let j = 0; j < child.length; j++) {
+        render(child[j], node);
+      }
+    } else {
+      render(child, node);
+    }
   }
 }
 

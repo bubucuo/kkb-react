@@ -8,8 +8,16 @@ import Component from "./kreact/Component";
 import "./index.css";
 
 class ClassComponent extends Component {
+  static defaultProps = {
+    color: "pink"
+  };
   render() {
-    return <div className="border">{this.props.name}</div>;
+    return (
+      <div className="border">
+        <div className={this.props.color}>color </div>
+        {this.props.name}
+      </div>
+    );
   }
 }
 
@@ -34,12 +42,12 @@ const jsx = (
       <h2>文本2</h2>
     </>
 
-    {/* {[1, 2, 3].map(item => (
+    {[1, 2, 3].map(item => (
       <div key={item}>
         {item}
         <h6>文本{item}</h6>
       </div>
-    ))} */}
+    ))}
   </div>
 );
 
