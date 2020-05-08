@@ -1,10 +1,9 @@
-// import React, {Component, useState} from "react";
+// import React, {Component} from "react";
 // import ReactDOM from "react-dom";
 
 import React from "./kreact/";
-import ReactDOM, {useState} from "./kreact/react-dom";
+import ReactDOM from "./kreact/react-dom";
 import Component from "./kreact/Component";
-
 import "./index.css";
 
 class ClassComponent extends Component {
@@ -22,60 +21,26 @@ class ClassComponent extends Component {
 }
 
 function FunctionComponent({name}) {
-  const [count, setCount] = useState(0);
-
   return (
     <div className="border">
       {name}
-      <button onClick={() => setCount(count + 1)}> {count}: count add</button>
-      <div className="border">
-        {count % 2 ? (
-          <button onClick={() => console.log("omg")}>click</button>
-        ) : (
-          <div>omg</div>
-        )}
-      </div>
+      <button onClick={() => console.log("omg")}>btn</button>
     </div>
   );
 }
 
 const jsx = (
-  <div className="box border">
+  <div className="border">
     <p>全栈学习</p>
     <a href="https://zh-hans.reactjs.org/">React学习</a>
-    <FunctionComponent name="函数组件" />
-    <ClassComponent name="class组件" />
+    {/* <FunctionComponent name="函数组件" /> */}
+    {/* <ClassComponent name="class组件" /> */}
 
-    <>
+    {/* <>
       <h1>文本1</h1>
       <h2>文本2</h2>
-    </>
-
-    {/* {[1, 2, 3].map(item => (
-      <div key={item}>
-        {item}
-        <h6>文本{item}</h6>
-      </div>
-    ))} */}
+    </> */}
   </div>
 );
 
-// <React.Fragment key={item}>
-//   {item}
-//   <h6>文本{item}</h6>
-// </React.Fragment>
-
-// vnode->node , 把node装入container
 ReactDOM.render(jsx, document.getElementById("root"));
-
-// console.log("version", React.version); //sy-log
-
-// vnode  虚拟dom节点
-// node 真实dom节点
-// !节点类型
-// 文本节点
-// HTML标签节点
-// function组件
-// class组件
-// fragment
-// 数组
