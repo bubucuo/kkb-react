@@ -163,7 +163,7 @@ function commitWorker(fiber) {
   }
 
   // parentNodeFiber 指的是当前fiber的有node节点的父fiber或者祖先
-  const parentNodeFiber = fiber.return;
+  let parentNodeFiber = fiber.return;
   while (!parentNodeFiber.node) {
     parentNodeFiber = parentNodeFiber.return;
   }
