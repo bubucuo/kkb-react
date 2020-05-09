@@ -33,9 +33,10 @@ function createNode(fiber) {
     node = document.createTextNode("");
   } else if (typeof type === "string") {
     node = document.createElement(type);
-  } else {
-    node = document.createDocumentFragment();
   }
+  // else {
+  //   node = document.createDocumentFragment();
+  // }
   updateNode(node, props);
   return node;
 }
@@ -105,12 +106,26 @@ function updateHostComponent(fiber) {
   reconcileChildren(fiber, children);
 }
 
+function updateFunctionComponent(fiber) {
+  const {type, props} = fiber;
+  const children = [type(props)];
+  reconcileChildren(fiber, children);
+}
+
+function updateClassComponent(fiber) {
+  const {type, props} = fiber;
+  const cmp = new type(props);
+  const children = [cmp.render()];
+  reconcileChildren(fiber, children);
+}
+
 function peformUnitOfWork(fiber) {
   // 1. 执行当前任务
   const {type} = fiber;
   if (typeof type === "function") {
-    // updateFunctionComponent
-    // updateClassComponent
+    type.isReactComponent
+      ? updateClassComponent(fiber)
+      : updateFunctionComponent(fiber);
   } else {
     // 原生标签
     updateHostComponent(fiber);
