@@ -1,9 +1,13 @@
-import {TEXT, PLACEMENT} from "./const";
+import { TEXT, PLACEMENT, UPDATE, DELETION } from "./const";
 
 // 下一个子任务 fiber
 let nextUnitOfWork = null;
 //  work in progress fiber root
 let wipRoot = null;
+
+let currentRoot = null;
+
+let deletions = null;
 
 // fiber结构
 /**
@@ -18,39 +22,51 @@ function render(vnode, container) {
   wipRoot = {
     node: container,
     props: {
-      children: [vnode]
+      children: [ vnode ]
     },
     base: null
   };
   console.log("wipRoot", wipRoot); //sy-log
   nextUnitOfWork = wipRoot;
+  deletions = [];
 }
 
 function createNode(fiber) {
-  const {type, props} = fiber;
+  const { type, props } = fiber;
   let node = null;
   if (type === TEXT) {
     node = document.createTextNode("");
   } else if (typeof type === "string") {
     node = document.createElement(type);
   }
-  // else {
-  //   node = document.createDocumentFragment();
-  // }
-  updateNode(node, props);
+  updateNode(node, {}, props);
   return node;
 }
 
-function updateNode(node, nextVal) {
+function updateNode(node, prevVal, nextVal) {
+  Object.keys(prevVal)
+    .filter(k => k !== "children")
+    .forEach(k => {
+      if (k.slice(0, 2) === "on") {
+        // 简单处理 on开头当做事件
+        let eventName = k.slice(2).toLowerCase();
+        node.removeEventListener(eventName, prevVal[ k ]);
+      } else {
+        if (!(k in nextVal)) {
+          node[ k ] = '';
+        }
+      }
+    });
+
   Object.keys(nextVal)
     .filter(k => k !== "children")
     .forEach(k => {
       if (k.slice(0, 2) === "on") {
         // 简单处理 on开头当做事件
         let eventName = k.slice(2).toLowerCase();
-        node.addEventListener(eventName, nextVal[k]);
+        node.addEventListener(eventName, nextVal[ k ]);
       } else {
-        node[k] = nextVal[k];
+        node[ k ] = nextVal[ k ];
       }
     });
 }
@@ -60,11 +76,19 @@ function reconcileChildren(workInProgressFiber, children) {
   let oldFiber = workInProgressFiber.base && workInProgressFiber.base.child;
   let prevSibling = null;
   for (let i = 0; i < children.length; i++) {
-    let child = children[i];
+    let child = children[ i ];
     let newFiber = null;
-    const sameType = child && newFiber && child.type === oldFiber.type;
+    const sameType = child && oldFiber && child.type === oldFiber.type;
     if (sameType) {
       // todo 类型相同 复用
+      newFiber = {
+        type: oldFiber.type,
+        props: child.props,
+        node: oldFiber.node,
+        base: oldFiber,
+        return: workInProgressFiber,
+        effectTag: UPDATE
+      };
     }
     if (!sameType && child) {
       // 类型不同 child存在  新增插入
@@ -80,6 +104,8 @@ function reconcileChildren(workInProgressFiber, children) {
 
     if (!sameType && oldFiber) {
       // todo 删除
+      deletions.push(oldFiber);
+      oldFiber.effectTag = DELETION;
     }
 
     if (oldFiber) {
@@ -102,26 +128,29 @@ function updateHostComponent(fiber) {
   if (!fiber.node) {
     fiber.node = createNode(fiber);
   }
-  const {children} = fiber.props;
+  const { children } = fiber.props;
   reconcileChildren(fiber, children);
 }
 
 function updateFunctionComponent(fiber) {
-  const {type, props} = fiber;
-  const children = [type(props)];
+  wipFiber = fiber;
+  wipFiber.hooks = [];
+  hookIndex = 0;
+  const { type, props } = fiber;
+  const children = [ type(props) ];
   reconcileChildren(fiber, children);
 }
 
 function updateClassComponent(fiber) {
-  const {type, props} = fiber;
+  const { type, props } = fiber;
   const cmp = new type(props);
-  const children = [cmp.render()];
+  const children = [ cmp.render() ];
   reconcileChildren(fiber, children);
 }
 
 function peformUnitOfWork(fiber) {
   // 1. 执行当前任务
-  const {type} = fiber;
+  const { type } = fiber;
   if (typeof type === "function") {
     type.isReactComponent
       ? updateClassComponent(fiber)
@@ -167,8 +196,9 @@ requestIdleCallback(workLoop);
 
 // ! commit 阶段
 function commitRoot() {
-  console.log("commitRoot"); //sy-log
+  deletions.forEach(commitWorker)
   commitWorker(wipRoot.child);
+  currentRoot = wipRoot;
   wipRoot = null;
 }
 
@@ -187,10 +217,52 @@ function commitWorker(fiber) {
   const parentNode = parentNodeFiber.node;
   if (fiber.effectTag === PLACEMENT && fiber.node !== null) {
     parentNode.appendChild(fiber.node);
+  } else if (fiber.effectTag === UPDATE && fiber.node !== null) {
+    updateNode(fiber.node, fiber.base.props, fiber.props)
+  } else if (fiber.effectTag === DELETION && fiber.node !== null) {
+    commitDeletions(fiber, parentNode);
+
   }
 
   commitWorker(fiber.child);
   commitWorker(fiber.sibling);
+}
+
+
+function commitDeletions(fiber, parentNode) {
+  if (fiber.node) {
+    parentNode.removeChild(fiber.node);
+  } else {
+    commitDeletions(fiber.child, parentNode);
+  }
+}
+
+let wipFiber = null;
+let hookIndex = null;
+export function useState(init) {
+  const oldHook = wipFiber.base && wipFiber.base.hooks[ hookIndex ]
+  const hook = { state: oldHook ? oldHook.state : init, queue: [] };
+
+  const actions = oldHook ? oldHook.queue : []
+  actions.forEach(action => hook.state = action);
+
+  const setState = (action) => {
+    hook.queue.push(action);
+    wipRoot = {
+      node: currentRoot.node,
+      props: currentRoot.props,
+      base: currentRoot
+    }
+
+    nextUnitOfWork = wipRoot;
+    deletions = [];
+  }
+
+  wipFiber.hooks.push(hook);
+  hookIndex++;
+
+  return [ hook.state, setState ]
+
 }
 
 export default {
