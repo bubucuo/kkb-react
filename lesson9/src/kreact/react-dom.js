@@ -1,10 +1,11 @@
-import { TEXT, PLACEMENT, UPDATE, DELETION } from "./const";
+import {TEXT, PLACEMENT, UPDATE, DELETION} from "./const";
 
 // 下一个子任务 fiber
 let nextUnitOfWork = null;
 //  work in progress fiber root
 let wipRoot = null;
 
+// 当前的根 fiber root
 let currentRoot = null;
 
 let deletions = null;
@@ -22,38 +23,44 @@ function render(vnode, container) {
   wipRoot = {
     node: container,
     props: {
-      children: [ vnode ]
+      children: [vnode]
     },
-    base: null
+    base: currentRoot
   };
+  deletions = [];
   console.log("wipRoot", wipRoot); //sy-log
   nextUnitOfWork = wipRoot;
-  deletions = [];
 }
 
 function createNode(fiber) {
-  const { type, props } = fiber;
+  const {type, props} = fiber;
   let node = null;
   if (type === TEXT) {
     node = document.createTextNode("");
   } else if (typeof type === "string") {
     node = document.createElement(type);
   }
+  // else {
+  //   node = document.createDocumentFragment();
+  // }
   updateNode(node, {}, props);
   return node;
 }
 
 function updateNode(node, prevVal, nextVal) {
+  // 旧的 className:'red'  style:{{color: 'red}}
+  // 新的 style:{{color: 'pink}}
   Object.keys(prevVal)
     .filter(k => k !== "children")
     .forEach(k => {
       if (k.slice(0, 2) === "on") {
         // 简单处理 on开头当做事件
         let eventName = k.slice(2).toLowerCase();
-        node.removeEventListener(eventName, prevVal[ k ]);
+        node.removeEventListener(eventName, prevVal[k]);
       } else {
+        // 简单处理，如果需要考虑的style的话，需要再做处理，清空对象
         if (!(k in nextVal)) {
-          node[ k ] = '';
+          node[k] = "";
         }
       }
     });
@@ -64,9 +71,9 @@ function updateNode(node, prevVal, nextVal) {
       if (k.slice(0, 2) === "on") {
         // 简单处理 on开头当做事件
         let eventName = k.slice(2).toLowerCase();
-        node.addEventListener(eventName, nextVal[ k ]);
+        node.addEventListener(eventName, nextVal[k]);
       } else {
-        node[ k ] = nextVal[ k ];
+        node[k] = nextVal[k];
       }
     });
 }
@@ -76,16 +83,16 @@ function reconcileChildren(workInProgressFiber, children) {
   let oldFiber = workInProgressFiber.base && workInProgressFiber.base.child;
   let prevSibling = null;
   for (let i = 0; i < children.length; i++) {
-    let child = children[ i ];
+    let child = children[i];
     let newFiber = null;
     const sameType = child && oldFiber && child.type === oldFiber.type;
     if (sameType) {
       // todo 类型相同 复用
       newFiber = {
-        type: oldFiber.type,
+        type: child.type,
         props: child.props,
         node: oldFiber.node,
-        base: oldFiber,
+        base: oldFiber, //存储当前节点上一次的值
         return: workInProgressFiber,
         effectTag: UPDATE
       };
@@ -104,8 +111,8 @@ function reconcileChildren(workInProgressFiber, children) {
 
     if (!sameType && oldFiber) {
       // todo 删除
-      deletions.push(oldFiber);
       oldFiber.effectTag = DELETION;
+      deletions.push(oldFiber);
     }
 
     if (oldFiber) {
@@ -128,7 +135,7 @@ function updateHostComponent(fiber) {
   if (!fiber.node) {
     fiber.node = createNode(fiber);
   }
-  const { children } = fiber.props;
+  const {children} = fiber.props;
   reconcileChildren(fiber, children);
 }
 
@@ -136,21 +143,21 @@ function updateFunctionComponent(fiber) {
   wipFiber = fiber;
   wipFiber.hooks = [];
   hookIndex = 0;
-  const { type, props } = fiber;
-  const children = [ type(props) ];
+  const {type, props} = fiber;
+  const children = [type(props)];
   reconcileChildren(fiber, children);
 }
 
 function updateClassComponent(fiber) {
-  const { type, props } = fiber;
+  const {type, props} = fiber;
   const cmp = new type(props);
-  const children = [ cmp.render() ];
+  const children = [cmp.render()];
   reconcileChildren(fiber, children);
 }
 
 function peformUnitOfWork(fiber) {
   // 1. 执行当前任务
-  const { type } = fiber;
+  const {type} = fiber;
   if (typeof type === "function") {
     type.isReactComponent
       ? updateClassComponent(fiber)
@@ -196,7 +203,8 @@ requestIdleCallback(workLoop);
 
 // ! commit 阶段
 function commitRoot() {
-  deletions.forEach(commitWorker)
+  console.log("commitRoot"); //sy-log
+  deletions.forEach(commitWorker);
   commitWorker(wipRoot.child);
   currentRoot = wipRoot;
   wipRoot = null;
@@ -218,17 +226,18 @@ function commitWorker(fiber) {
   if (fiber.effectTag === PLACEMENT && fiber.node !== null) {
     parentNode.appendChild(fiber.node);
   } else if (fiber.effectTag === UPDATE && fiber.node !== null) {
-    updateNode(fiber.node, fiber.base.props, fiber.props)
+    // 更新
+    updateNode(fiber.node, fiber.base.props, fiber.props);
   } else if (fiber.effectTag === DELETION && fiber.node !== null) {
+    // 更新
     commitDeletions(fiber, parentNode);
-
   }
 
   commitWorker(fiber.child);
   commitWorker(fiber.sibling);
 }
 
-
+// fiber是要删除的
 function commitDeletions(fiber, parentNode) {
   if (fiber.node) {
     parentNode.removeChild(fiber.node);
@@ -237,32 +246,32 @@ function commitDeletions(fiber, parentNode) {
   }
 }
 
+// 当前正在工作中的fiber， work in progress
 let wipFiber = null;
 let hookIndex = null;
 export function useState(init) {
-  const oldHook = wipFiber.base && wipFiber.base.hooks[ hookIndex ]
-  const hook = { state: oldHook ? oldHook.state : init, queue: [] };
+  // 状态值：初始值以及改变之后的值
+  const oldHook = wipFiber.base && wipFiber.base.hooks[hookIndex];
+  const hook = {state: oldHook ? oldHook.state : init, queue: []};
 
-  const actions = oldHook ? oldHook.queue : []
-  actions.forEach(action => hook.state = action);
+  const actions = oldHook ? oldHook.queue : [];
+  actions.forEach(action => (hook.state = action));
 
-  const setState = (action) => {
+  const setState = action => {
     hook.queue.push(action);
     wipRoot = {
+      // ...currentRoot,
       node: currentRoot.node,
       props: currentRoot.props,
       base: currentRoot
-    }
-
-    nextUnitOfWork = wipRoot;
+    };
     deletions = [];
-  }
-
+    nextUnitOfWork = wipRoot;
+  };
+  // [状态值，改变状态值的函数]
   wipFiber.hooks.push(hook);
   hookIndex++;
-
-  return [ hook.state, setState ]
-
+  return [hook.state, setState];
 }
 
 export default {
