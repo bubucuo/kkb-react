@@ -1,8 +1,7 @@
 import React, {Component} from "react";
 
 // hoc
-// 是个函数,参数是组件，返回值也是组件
-
+// 是个函数,参数为组件,返回值也是组件
 const foo = Cmp => props => {
   return (
     <div className="border">
@@ -15,6 +14,8 @@ const foo = Cmp => props => {
 //   return <div className="border">Child-{props.name}</div>;
 // }
 
+// const Foo = foo(foo(Child));
+
 @foo
 @foo
 class Child extends Component {
@@ -23,14 +24,13 @@ class Child extends Component {
   }
 }
 
-// const Foo = foo(foo(Child));
-
 export default class HocPage extends Component {
   render() {
     return (
       <div>
         <h3>HocPage</h3>
-        <Child name="我是参数" />
+        {/* <Foo name="参数" /> */}
+        <Child name="新参数" />
       </div>
     );
   }

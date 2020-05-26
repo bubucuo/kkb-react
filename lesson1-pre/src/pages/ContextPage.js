@@ -17,9 +17,7 @@ export default class ContextPage extends Component {
       <div>
         <h3>ContextPage</h3>
         <ThemeProvider value={theme}>
-          <div>
-            <HomePage />
-          </div>
+          <HomePage />
         </ThemeProvider>
       </div>
     );
