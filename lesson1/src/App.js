@@ -1,8 +1,9 @@
 import React from "react";
-import ContextPage from "./pages/ContextPage";
-import HocPage from "./pages/HocPage";
-import AntdFormPage from "./pages/AntdFormPage";
-import MyRCFieldForm from "./pages/MyRCFieldForm";
+// import ContextPage from "./pages/ContextPage";
+// import HocPage from "./pages/HocPage";
+// import AntdFormPage from "./pages/AntdFormPage";
+// import MyRCFieldForm from "./pages/MyRCFieldForm";
+import MyRCForm from "./pages/MyRCForm";
 
 export default function App(props) {
   return (
@@ -10,7 +11,8 @@ export default function App(props) {
       {/* <ContextPage /> */}
       {/* <HocPage /> */}
       {/* <AntdFormPage /> */}
-      <MyRCFieldForm />
+      {/* <MyRCFieldForm /> */}
+      <MyRCForm />
     </div>
   );
 }
