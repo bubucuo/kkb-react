@@ -4,6 +4,7 @@ import React from "react";
 // import AntdFormPage from "./pages/AntdFormPage";
 // import MyRCFieldForm from "./pages/MyRCFieldForm";
 import MyRCForm from "./pages/MyRCForm";
+import DialogPage from "./pages/DialogPage";
 
 export default function App(props) {
   return (
@@ -12,7 +13,8 @@ export default function App(props) {
       {/* <HocPage /> */}
       {/* <AntdFormPage /> */}
       {/* <MyRCFieldForm /> */}
-      <MyRCForm />
+      {/* <MyRCForm /> */}
+      <DialogPage />
     </div>
   );
 }
