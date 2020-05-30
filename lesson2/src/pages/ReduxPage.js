@@ -33,15 +33,24 @@ export default class ReduxPage extends Component {
     });
   };
 
+  promiseMinus = () => {
+    store.dispatch(
+      Promise.resolve({
+        type: "MINUS"
+      })
+    );
+  };
+
   render() {
     return (
       <div>
         <h3>ReduxPage</h3>
 
-        <p>{store.getState()}</p>
+        <p>{store.getState().home}</p>
         <button onClick={this.add}>add</button>
         <button onClick={this.minus}>minus</button>
         <button onClick={this.asyAdd}>asyAdd</button>
+        <button onClick={this.promiseMinus}>promiseMinus</button>
       </div>
     );
   }

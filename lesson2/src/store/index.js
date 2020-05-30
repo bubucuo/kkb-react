@@ -1,9 +1,10 @@
-import {createStore, applyMiddleware} from "redux";
-import thunk from "redux-thunk";
-import logger from "redux-logger";
+import {createStore, applyMiddleware, combineReducers} from "redux";
+// import thunk from "redux-thunk";
+// import logger from "redux-logger";
+// import promise from "redux-promise";
+// import {createStore, applyMiddleware} from "../kredux/";
 
-// import {createStore} from "../kredux/";
-// import createStore from "../kredux/createStore";
+import isPromise from "is-promise";
 
 export const countReducer = (state = 0, {type, payload = 1}) => {
   switch (type) {
@@ -18,6 +19,43 @@ export const countReducer = (state = 0, {type, payload = 1}) => {
   }
 };
 
-const store = createStore(countReducer, applyMiddleware(thunk, logger));
+const store = createStore(
+  combineReducers({home: countReducer}),
+  applyMiddleware(thunk, logger, promise)
+);
+
+function logger({getState}) {
+  return next => action => {
+    console.log("-----------------------"); //sy-log
+
+    console.log(action.type + "执行了！"); //sy-log
+
+    const prevState = getState();
+    console.log("prev state", prevState); //sy-log
+
+    const returnValue = next(action);
+    const nextState = getState();
+    console.log("next state", nextState, returnValue); //sy-log
+
+    console.log("-----------------------"); //sy-log
+
+    return returnValue;
+  };
+}
+
+function thunk({dispatch, getState}) {
+  return next => action => {
+    if (typeof action === "function") {
+      return action(dispatch, getState);
+    }
+    return next(action);
+  };
+}
+
+function promise({dispatch}) {
+  return next => action => {
+    return isPromise(action) ? action.then(dispatch) : next(action);
+  };
+}
 
 export default store;
