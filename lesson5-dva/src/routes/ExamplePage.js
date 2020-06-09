@@ -35,7 +35,7 @@ class ExamplePage extends Component {
       <div>
         <h3>ExamplePage</h3>
         <button onClick={this.dataSearch}>search</button>
-        <Table columns={columns} dataSource={data} />
+        <Table columns={columns} dataSource={data} rowKey="id" />
       </div>
     );
   }
