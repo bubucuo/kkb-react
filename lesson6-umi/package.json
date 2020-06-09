@@ -20,6 +20,7 @@
     ]
   },
   "dependencies": {
+    "@ant-design/pro-layout": "^5.0.15",
     "@umijs/preset-react": "1.x",
     "@umijs/test": "^3.2.3",
     "lint-staged": "^10.0.7",
