@@ -79,6 +79,12 @@ export default defineConfig({
               component: './ListTableList',
             },
             {
+              name: 'more',
+              icon: 'smile',
+              path: '/more',
+              component: './more',
+            },
+            {
               component: './404',
             },
           ],
