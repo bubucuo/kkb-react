@@ -39,11 +39,7 @@ const jsx = (
     <p>全栈</p>
     <a href="https://www.kaikeba.com/">开课吧</a>
     <FunctionComponent name="FunctionComponent" />
-    <ClassComponent name="ClassComponent" color="red" />
-    {/* <>
-      <h1>aa</h1>
-      <h1>bb</h1>
-    </> */}
+    // <ClassComponent name="ClassComponent" />
   </div>
 );
 
@@ -51,3 +47,10 @@ ReactDOM.render(jsx, document.getElementById("root"));
 
 // ! vnode 虚拟dom节点
 // ! node 真实dom节点
+
+// h5标签渲染
+// 文本渲染
+// 函数组件渲染
+// 类组件渲染
+// fragment渲染
+// 数组渲染
