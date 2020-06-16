@@ -1,4 +1,4 @@
-import {TEXT, PLACEMENT} from "./const";
+import {TEXT, PLACEMENT, UPDATE, DELETION} from "./const";
 
 // 下一个任务 fiber
 let nextUnitOfWork = null;
@@ -9,6 +9,8 @@ let wipRoot = null;
 // 当前根节点
 let currentRoot = null;
 
+// 存储要删除的fiber
+let deletions = null;
 function render(vnode, container) {
   // console.log("vnode", vnode, container); //sy-log
   // vnode->node
@@ -23,6 +25,7 @@ function render(vnode, container) {
     base: currentRoot
   };
   nextUnitOfWork = wipRoot;
+  deletions = [];
 }
 
 // vnode->node 这个过程还要处理属性
@@ -42,11 +45,15 @@ function createNode(vnode, parentNode) {
     node = document.createDocumentFragment();
   }
   // reconcileChildren(props.children, node);
-  updateNode(node, props);
+  updateNode(node, {}, props);
   return node;
 }
 
 function updateFunctionComponent(fiber) {
+  wipFiber = fiber;
+  // 整理我们实现为数组，源码中是链表
+  wipFiber.hooks = [];
+  hookIndex = 0;
   const {type, props} = fiber;
   const children = [type(props)];
   reconcileChildren(fiber, children);
@@ -61,7 +68,20 @@ function updateClassComponent(fiber) {
 }
 
 // 真实dom节点属性添加
-function updateNode(node, nextVal) {
+function updateNode(node, prevVal, nextVal) {
+  Object.keys(prevVal)
+    .filter(k => k !== "children")
+    .forEach(k => {
+      if (k.slice(0, 2) === "on") {
+        // ! 这里不是源码重点中的实现逻辑
+        let evenetName = k.slice(2).toLowerCase();
+        node.removeEventListener(evenetName, nextVal[k]);
+      } else {
+        if (!(k in nextVal)) {
+          node[k] = "";
+        }
+      }
+    });
   Object.keys(nextVal)
     .filter(k => k !== "children")
     .forEach(k => {
@@ -91,19 +111,46 @@ function reconcileChildren_old(children, node) {
 }
 // workInProgressFiber父fiber，children是个数组，
 // 这个函数就是给workInProgressFiber添加child，再给child构建sibling，形成一个链表
-let prevSilbling = null;
-
 function reconcileChildren(workInProgressFiber, children) {
+  let prevSilbling = null;
+  // 上一次的第一个子元素
+  let oldFiber = workInProgressFiber.base && workInProgressFiber.base.child;
   for (let i = 0; i < children.length; i++) {
     let child = children[i];
-    let newFiber = {
-      type: child.type,
-      props: child.props,
-      node: null,
-      base: null,
-      return: workInProgressFiber,
-      effectTag: PLACEMENT
-    };
+    const sameType = child && oldFiber && child.type === oldFiber.type;
+    let newFiber;
+    if (sameType) {
+      // 复用
+      newFiber = {
+        type: child.type,
+        props: child.props,
+        node: oldFiber.node,
+        base: oldFiber,
+        return: workInProgressFiber,
+        effectTag: UPDATE
+      };
+    }
+    if (!sameType && child) {
+      // 类型不同 child存在 直接新增fiber插入
+      newFiber = {
+        type: child.type,
+        props: child.props,
+        node: null,
+        base: null,
+        return: workInProgressFiber,
+        effectTag: PLACEMENT
+      };
+    }
+    if (!sameType && oldFiber) {
+      // 删除
+      oldFiber.effectTag = DELETION;
+      deletions.push(oldFiber);
+    }
+
+    if (oldFiber) {
+      oldFiber = oldFiber.sibling;
+    }
+
     if (i === 0) {
       workInProgressFiber.child = newFiber;
     } else {
@@ -123,8 +170,6 @@ function updateHostComponent(fiber) {
   // 2. 协调子元素，构建子元素的fiber架构
   const {children} = fiber.props;
   reconcileChildren(fiber, children);
-
-  console.log("fiber", fiber); //sy-log
 }
 
 function performUnitOfWork(fiber) {
@@ -170,6 +215,7 @@ function workLoop(deadline) {
 requestIdleCallback(workLoop);
 
 function commitRoot() {
+  deletions.forEach(commitWorker);
   commitWorker(wipRoot.child);
   currentRoot = wipRoot;
   wipRoot = null;
@@ -187,10 +233,55 @@ function commitWorker(fiber) {
   let parentNode = parentNodeFiber.node;
   if (fiber.effectTag === PLACEMENT && fiber.node !== null) {
     parentNode.appendChild(fiber.node);
+  } else if (fiber.effectTag === UPDATE && fiber.node !== null) {
+    updateNode(fiber.node, fiber.base.props, fiber.props);
+  } else if (fiber.effectTag === DELETION && fiber.node !== null) {
+    commitDeletions(fiber, parentNode);
   }
   // todo 删除 更新
   commitWorker(fiber.child);
   commitWorker(fiber.sibling);
+}
+
+function commitDeletions(fiber, parentNode) {
+  if (fiber.node) {
+    parentNode.removeChild(fiber.node);
+  } else {
+    commitDeletions(fiber.child, parentNode);
+  }
+}
+
+// work in progress 正在工作中的fiber ing
+let wipFiber = null;
+let hookIndex = null;
+export function useState(init) {
+  const oldHook = wipFiber.base && wipFiber.base.hooks[hookIndex];
+  const hook = {
+    state: oldHook ? oldHook.state : init,
+    queue: []
+  };
+
+  const actions = oldHook ? oldHook.queue : [];
+  // 这里模拟批量执行
+  actions.forEach(action => {
+    hook.state = action;
+  });
+
+  const setState = action => {
+    hook.queue.push(action);
+    wipRoot = {
+      node: currentRoot.node,
+      props: currentRoot.props,
+      base: currentRoot
+    };
+    nextUnitOfWork = wipRoot;
+    deletions = [];
+  };
+
+  wipFiber.hooks.push(hook);
+  hookIndex++;
+  // 初始化的时候返回的是init， 更新阶段是重新计算出来的参数值
+  return [hook.state, setState];
 }
 
 export default {render};
