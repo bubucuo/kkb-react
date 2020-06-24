@@ -1,6 +1,4 @@
 import React, {Component} from "react";
-import {ThemeProvider, UserProvider} from "../Context";
-import ContextTypePage from "./ContextTypePage";
 
 export default class ContextPage extends Component {
   constructor(props) {
@@ -17,10 +15,6 @@ export default class ContextPage extends Component {
     return (
       <div>
         <h3>ContextPage</h3>
-        <ThemeProvider value={theme}>
-          <ContextTypePage />
-          <UseContextPage />
-        </ThemeProvider>
       </div>
     );
   }
