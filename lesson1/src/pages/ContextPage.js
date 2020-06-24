@@ -1,7 +1,6 @@
 import React, {Component} from "react";
 import {ThemeProvider, UserProvider} from "../Context";
 import ContextTypePage from "./ContextTypePage";
-import UseContextPage from "./UseContextPage";
 
 export default class ContextPage extends Component {
   constructor(props) {
