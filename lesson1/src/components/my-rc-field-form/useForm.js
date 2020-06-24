@@ -31,8 +31,9 @@ class FormStore {
   // 修改store
   setFieldsValue = newStore => {
     this.store = {
-      ...this.store,
-      ...newStore
+      // ! 调整下顺序
+      ...newStore,
+      ...this.store
     };
     // store已经更新，但是我们希望组件也跟着更新
     this.fieldEntities.forEach(enetity => {
