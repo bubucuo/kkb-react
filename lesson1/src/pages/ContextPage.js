@@ -13,7 +13,7 @@ export default class ContextPage extends Component {
   }
 
   render() {
-    const {theme, user} = this.state;
+    const {theme} = this.state;
     return (
       <div>
         <h3>ContextPage</h3>
