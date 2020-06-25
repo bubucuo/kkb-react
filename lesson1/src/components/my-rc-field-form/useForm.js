@@ -8,8 +8,8 @@ class FormStore {
 
   setCallback = callback => {
     this.calllbacks = {
-      ...callback,
-      ...this.calllbacks
+      ...this.calllbacks,
+      ...callback
     };
   };
   registerField = field => {
@@ -31,9 +31,8 @@ class FormStore {
   // 修改store
   setFieldsValue = newStore => {
     this.store = {
-      // ! 调整下顺序
-      ...newStore,
-      ...this.store
+      ...this.store,
+      ...newStore
     };
     // store已经更新，但是我们希望组件也跟着更新
     this.fieldEntities.forEach(enetity => {
