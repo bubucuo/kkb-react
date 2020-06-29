@@ -9,8 +9,8 @@ export default function App(props) {
     <div>
       {/* <ContextPage /> */}
       {/* <AntdFormPage /> */}
-      {/* <MyRCFieldForm /> */}
-      <MyRCForm />
+      <MyRCFieldForm />
+      {/* <MyRCForm /> */}
     </div>
   );
 }
