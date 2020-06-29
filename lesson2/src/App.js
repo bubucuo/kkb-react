@@ -1,9 +1,10 @@
 import React from "react";
+import ReduxPage from "./pages/ReduxPage";
 
 export default function App(props) {
   return (
     <div>
-      <h3>App</h3>
+      <ReduxPage />
     </div>
   );
 }
