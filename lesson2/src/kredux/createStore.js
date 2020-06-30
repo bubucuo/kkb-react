@@ -22,6 +22,10 @@ export default function createStore(reducer, enhancer) {
     return () => {
       // 简单置空，大家可以自己实现过滤
       currentListeners = [];
+
+      //! 课后补充 可以用以下实现过滤
+      // const index = currentListeners.indexOf(listener);
+      // currentListeners.splice(index, 1);
     };
   }
 

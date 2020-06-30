@@ -46,6 +46,8 @@ export default class ReduxPage extends Component {
       <div>
         <h3>ReduxPage</h3>
         <p>{store.getState()}</p>
+        {/* ! 课后补充 使用combineReducers之后，这里返回的state是个对象 */}
+        {/* <p>{store.getState().count}</p> */}
         <button onClick={this.add}>add</button>
         <button onClick={this.asyAdd}>asyAdd</button>
         <button onClick={this.promiseMinus}>promiseMinus</button>
