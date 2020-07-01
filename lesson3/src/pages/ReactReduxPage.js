@@ -11,21 +11,21 @@ import {bindActionCreators, connect} from "../kReactRedux";
   },
 
   // mapDispatchToProps object|function 把dispatch放到props上一份
-  // {
-  //   add: () => ({type: "ADD"}),
-  //   minus: () => ({type: "MINUS"})
-  // },
-
-  dispatch => {
-    let creators = {
-      add: () => ({type: "ADD", payload: 100}),
-      minus: () => ({type: "MINUS", payload: 100})
-    };
-
-    creators = bindActionCreators(creators, dispatch);
-
-    return {dispatch, ...creators};
+  {
+    add: () => ({type: "ADD"}),
+    minus: () => ({type: "MINUS"})
   }
+
+  // dispatch => {
+  //   let creators = {
+  //     add: () => ({type: "ADD", payload: 100}),
+  //     minus: () => ({type: "MINUS", payload: 100})
+  //   };
+
+  //   creators = bindActionCreators(creators, dispatch);
+
+  //   return {dispatch, ...creators};
+  // }
   // (stateProps, dispatchProps, ownProps) => {
   //   return {
   //     // ...stateProps,
@@ -53,3 +53,4 @@ class ReactReduxPage extends Component {
   }
 }
 export default ReactReduxPage;
+// export default connect()(ReactReduxPage);
