@@ -1,5 +1,5 @@
 // import {createStore, applyMiddleware, combineReducers} from "redux";
-import {createStore, applyMiddleware} from "../kredux/";
+import {createStore, applyMiddleware, combineReducers} from "../kredux/";
 // import thunk from "redux-thunk";
 // import logger from "redux-logger";
 // import promise from "redux-promise";
@@ -25,13 +25,13 @@ function countReducer(state = 0, action) {
 }
 
 const store = createStore(
-  countReducer,
+  // countReducer,
 
   // ! 课后补充 combineReducers用法
-  // combineReducers({
-  //   count: countReducer
-  //   // 如果还有别的reducer，可以继续在这里添加
-  // }),
+  combineReducers({
+    count: countReducer
+    // 如果还有别的reducer，可以继续在这里添加
+  }),
   applyMiddleware(thunk, logger, promise)
 );
 
