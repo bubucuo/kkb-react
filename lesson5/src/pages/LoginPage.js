@@ -22,8 +22,8 @@ export default connect(
       this.setState({name: e.target.value});
     };
     render() {
-      const {isLogin, location, login, err} = this.props;
-      console.log("LoginPage", this.props); //sy-log
+      const {isLogin, location, login, err, loading} = this.props;
+      // console.log("LoginPage", this.props); //sy-log
       if (isLogin) {
         // 已经登录了
         const {from = "/"} = location.state || {};
@@ -35,7 +35,9 @@ export default connect(
         <div>
           <h3>LoginPage</h3>
           <input type="text" value={name} onChange={this.nameChange} />
-          <button onClick={() => login({name})}>click login</button>
+          <button onClick={() => login({name})}>
+            {loading ? "loading..." : "click login"}
+          </button>
           <p className="red">{err.msg}</p>
         </div>
       );

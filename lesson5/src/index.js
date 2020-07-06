@@ -4,6 +4,8 @@ import "./index.css";
 import App from "./App";
 import store from "./store/index";
 import {Provider} from "react-redux";
+import "./static/style/iconfont/iconfont.css";
+import "./static/js/flexible";
 
 ReactDOM.render(
   <Provider store={store}>
