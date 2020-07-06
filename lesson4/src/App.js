@@ -1,4 +1,17 @@
 import React from "react";
+// import {
+//   BrowserRouter as Router,
+//   Route,
+//   Link,
+//   Switch,
+//   useRouteMatch,
+//   useHistory,
+//   useLocation,
+//   useParams,
+//   withRouter,
+//   Prompt
+// } from "react-router-dom";
+
 import {
   BrowserRouter as Router,
   Route,
@@ -10,25 +23,14 @@ import {
   useParams,
   withRouter,
   Prompt
-} from "react-router-dom";
-
-// import {
-//   BrowserRouter as Router,
-//   Route,
-//   Link,
-//   Switch,
-//   useRouteMatch,
-//   useHistory,
-//   useLocation,
-//   useParams,
-//   withRouter
-// } from "./k-react-router-dom/";
+} from "./k-react-router-dom/";
 
 import HomePage from "./pages/HomePage";
 import UserPage from "./pages/UserPage";
 import LoginPage from "./pages/LoginPage";
 import _404Page from "./pages/_404Page";
 import RouteComponentPage from "./pages/RouteComponentPage";
+import WelcomePage from "./pages/WelcomePage";
 
 export default function App(props) {
   return (
@@ -45,13 +47,14 @@ export default function App(props) {
             exact
             path="/"
             // children={children}
-            //component={HomePage}
-            render={render}
+            component={HomePage}
+            //render={render}
           />
           <Route path="/user" component={UserPage} />
           <Route path="/login" component={LoginPage} />
           {/* <Route path="/product/:id" component={Product} /> */}
           <Route path="/product/:id" render={() => <Product />} />
+          <Route path="/welcome" component={WelcomePage} />
 
           <Route component={_404Page} />
         </Switch>
