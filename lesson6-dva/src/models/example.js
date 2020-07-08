@@ -13,6 +13,7 @@ export default {
   subscriptions: {
     setup({ dispatch, history }) {
       // eslint-disable-line
+      console.log("example subscriptions"); //sy-log
     }
   },
 

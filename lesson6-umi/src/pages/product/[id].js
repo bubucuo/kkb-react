@@ -1,25 +1,14 @@
 import React from 'react';
 import styles from './[id].css';
-import { useParams } from 'dva';
+import { Link } from 'umi';
 
 export default props => {
+  const { match } = props;
   console.log('props', props); //sy-log
-  const { id } = props.match.params;
-  // const { id } = useParams();
   return (
     <div>
-      <h1 className={styles.title}>Page product/[{id}]</h1>
-      <Child />
+      <h1 className={styles.title}>Page product/[id]:{match.params.id}</h1>
+      <Link to="/more">Go to more page</Link>
     </div>
   );
 };
-
-function Child(props) {
-  const { id } = useParams();
-  return (
-    <div>
-      <h1>Child</h1>
-      <p>{id}</p>
-    </div>
-  );
-}

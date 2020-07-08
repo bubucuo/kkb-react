@@ -20,16 +20,23 @@ const columns = [
   }
 ];
 
-@connect(({ example }) => ({ example }), {
-  getProductData: payload => ({ type: "example/getProductData", payload })
-})
+// @connect(({ example }) => ({ example }), {
+@connect(
+  state => {
+    console.log("state", state); //sy-log
+    return { example: state.example };
+  },
+  {
+    getProductData: payload => ({ type: "example/getProductData", payload })
+  }
+)
 class ExamplePage extends Component {
   dataSearch = () => {
     // 异步获取数据
     this.props.getProductData();
   };
   render() {
-    console.log("porps", this.props); //sy-log
+    console.log(" ExamplePage porps", this.props); //sy-log
     const { data } = this.props.example;
     return (
       <div>
