@@ -5,7 +5,6 @@ import {TEXT} from "./const";
 
 // 把vnode变成node，然后把node插入到父容器中
 function render(vnode, container) {
-  console.log("vnode", vnode); //sy-log
   // vnode->node
   const node = createNode(vnode);
   container.appendChild(node);
