@@ -68,11 +68,11 @@ function updateFunctionComponent(fiber) {
 }
 
 function updateClassComponent(fiber) {
-  const {type, props} = fiber;
-  let cmp = new type(props);
-  let vvnode = cmp.render();
-  const children = [vvnode];
-  reconcileChildren(fiber, children);
+  // const {type, props} = vnode;
+  // const cmp = new type(props);
+  // const vvnode = cmp.render();
+  // const node = createNode(vvnode);
+  // return node;
 }
 
 // 协调子节点
