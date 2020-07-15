@@ -121,8 +121,6 @@ function updateHostComponent(fiber) {
   // 协调
   const {children} = fiber.props;
   reconcileChildren(fiber, children);
-
-  console.log("fiber----", fiber); //sy-log
 }
 
 function performUnitOfWork(fiber) {

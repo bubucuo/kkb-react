@@ -39,7 +39,7 @@ const jsx = (
     <p>全栈</p>
     <a href="https://www.kaikeba.com/">开课吧</a>
     <FunctionComponent name="function" />
-    {/* <ClassComponent name="class" color="red" /> */}
+    <ClassComponent name="class" color="red" />
 
     {/* {[1, 2].map(item => (
       <div key={item}>{item}</div>
