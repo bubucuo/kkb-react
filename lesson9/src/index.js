@@ -6,7 +6,7 @@ import ReactDOM, {useState} from "./kreact/react-dom";
 import Component from "./kreact/Component";
 import "./index.css";
 
-// [hook1, hoo2, hook3]
+// [hook1, hook2, hook3]
 function FunctionComponent(props) {
   const [count, setCount] = useState(1);
 
@@ -15,10 +15,12 @@ function FunctionComponent(props) {
       FunctionComponent-{props.name}
       <button
         onClick={() => {
+          ///console.log("omg"); //sy-log
           setCount(count + 1);
         }}>
         {count}
       </button>
+      {count % 2 ? <button>click</button> : <span>omg</span>}
     </div>
   );
 }

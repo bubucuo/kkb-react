@@ -1,4 +1,4 @@
-import {TEXT, PLACEMENT, UPDATE} from "./const";
+import {TEXT, PLACEMENT, UPDATE, DELETION} from "./const";
 
 // vnode虚拟dom
 // node真实dom节点
@@ -24,6 +24,8 @@ let currentRoot = null;
 // 当前正在工作的fiber
 let wipFiber = null;
 
+let deletions = null;
+
 // 把vnode变成node，然后把node插入到父容器中
 function render(vnode, container) {
   // vnode->node
@@ -36,6 +38,8 @@ function render(vnode, container) {
       children: [vnode]
     }
   };
+
+  deletions = [];
 
   nextUnitOfWork = wipRoot;
 }
@@ -61,7 +65,7 @@ function createNode(vnode) {
   }
 
   // reconcileChildren(props.children, node);
-  updateNode(node, props);
+  updateNode(node, {}, props);
   return node;
 }
 
@@ -120,6 +124,8 @@ function reconcileChildren(workInProgressFiber, children) {
 
     if (!sameType && oldFiber) {
       // 删除
+      oldFiber.effectTag = DELETION;
+      deletions.push(oldFiber);
     }
 
     if (oldFiber) {
@@ -136,8 +142,21 @@ function reconcileChildren(workInProgressFiber, children) {
     prevSibling = newFiber;
   }
 }
-
-function updateNode(node, nextVal) {
+// old {a:1}
+// new {b:1}
+function updateNode(node, prevVal, nextVal) {
+  Object.keys(prevVal)
+    .filter(k => k !== "children")
+    .forEach(k => {
+      if (k.slice(0, 2) === "on") {
+        let eventName = k.slice(2).toLowerCase();
+        node.removeEventListener(eventName, prevVal[k]);
+      } else {
+        if (!(k in nextVal)) {
+          node[k] = "";
+        }
+      }
+    });
   Object.keys(nextVal)
     .filter(k => k !== "children")
     .forEach(k => {
@@ -203,6 +222,7 @@ requestIdleCallback(workLoop);
 
 // 提交
 function commitRoot() {
+  deletions.forEach(commitWorker);
   commitWorker(wipRoot.child);
   // 因为这里处于循环，提交完之后就要设置为null，否则会一直提交
   currentRoot = wipRoot;
@@ -224,11 +244,21 @@ function commitWorker(fiber) {
   if (fiber.effectTag === PLACEMENT && fiber.node !== null) {
     parentNode.appendChild(fiber.node);
   } else if (fiber.effectTag === UPDATE && fiber.node !== null) {
-    updateNode(fiber.node, fiber.props);
+    updateNode(fiber.node, fiber.base.props, fiber.props);
+  } else if (fiber.effectTag === DELETION && fiber.node !== null) {
+    commitDeletions(fiber, parentNode);
   }
 
   commitWorker(fiber.child);
   commitWorker(fiber.sibling);
+}
+
+function commitDeletions(fiber, parentNode) {
+  if (fiber.node) {
+    parentNode.removeChild(fiber.node);
+  } else {
+    commitDeletions(fiber.child, parentNode);
+  }
 }
 
 export function useState(init) {
@@ -255,6 +285,7 @@ export function useState(init) {
       base: currentRoot
     };
     nextUnitOfWork = wipRoot;
+    deletions = [];
   };
   wipFiber.hooks.push(hook);
   wipFiber.hookIndex++;
