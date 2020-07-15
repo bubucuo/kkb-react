@@ -1,20 +1,23 @@
-// import React, {Component} from "react";
+// import React, {Component, useState} from "react";
 // import ReactDOM from "react-dom";
 
 import React from "./kreact/";
-import ReactDOM from "./kreact/react-dom";
+import ReactDOM, {useState} from "./kreact/react-dom";
 import Component from "./kreact/Component";
 import "./index.css";
 
+// [hook1, hoo2, hook3]
 function FunctionComponent(props) {
+  const [count, setCount] = useState(1);
+
   return (
     <div className="border">
       FunctionComponent-{props.name}
       <button
         onClick={() => {
-          console.log("omg"); //sy-log
+          setCount(count + 1);
         }}>
-        click
+        {count}
       </button>
     </div>
   );
