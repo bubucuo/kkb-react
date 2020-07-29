@@ -1,4 +1,4 @@
-import {createStore, applyMiddleware} from "redux";
+import {createStore, applyMiddleware, combineReducers} from "redux";
 // import thunk from "redux-thunk";
 // import logger from "redux-logger";
 // import promise from "redux-promise";
@@ -19,6 +19,8 @@ function countReducer(state = 0, action) {
 
 const store = createStore(
   countReducer,
+  // ! 课后补充： combineReducers用法
+  // combineReducers({home: countReducer}),
   applyMiddleware(thunk, logger, promise)
 );
 

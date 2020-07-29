@@ -42,6 +42,10 @@ export default class ReduxPage extends Component {
       <div>
         <h3>ReduxPage</h3>
         <p>{store.getState()}</p>
+        {/* 
+          ! 课后补充： combineReducers用法
+         */}
+        {/* <p>{store.getState().home}</p> */}
         <button onClick={this.add}>add</button>
         <button onClick={this.asyAdd}>asyAdd</button>
         <button onClick={this.promiseMinus}>promise minus</button>
