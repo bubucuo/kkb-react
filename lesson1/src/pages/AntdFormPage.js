@@ -10,6 +10,7 @@ const passworRules = {required: true, message: "请输入密码！"};
 //   formRef = React.createRef();
 
 //   componentDidMount() {
+//     console.log("formRef", this.formRef.current); //sy-log
 //     this.formRef.current.setFieldsValue({name: "default"});
 //   }
 

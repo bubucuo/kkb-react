@@ -5,11 +5,14 @@ export default class ConsumerPage extends Component {
   render() {
     return (
       <div>
+        <h3>ConsumerPage</h3>
         <ThemeConsumer>
-          {ctx => (
-            <div>
-              <h3 className={ctx.themeColor}>ConsumerPage</h3>
-              <UserConsumer>{user => <p>{user.name}</p>}</UserConsumer>
+          {themeContext => (
+            <div className={themeContext.themeColor}>
+              omg
+              <UserConsumer>
+                {userContext => <Child {...userContext} />}
+              </UserConsumer>
             </div>
           )}
         </ThemeConsumer>
@@ -18,6 +21,6 @@ export default class ConsumerPage extends Component {
   }
 }
 
-/**
- * contetxType
- */
+function Child(props) {
+  return <div>{props.name}</div>;
+}
