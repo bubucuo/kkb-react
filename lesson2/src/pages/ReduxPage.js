@@ -1,47 +1,54 @@
-import React, {Component} from "react";
-import store from "../store/";
+import React, { Component } from "react"
+import store from "../store/"
 
 export default class ReduxPage extends Component {
   componentDidMount() {
     this.unsubscribe = store.subscribe(() => {
       // store state 改变
-      this.forceUpdate();
-    });
+      this.forceUpdate()
+    })
   }
 
   componentWillUnmount() {
     if (this.unsubscribe) {
-      this.unsubscribe();
+      this.unsubscribe()
     }
   }
 
   add = () => {
-    store.dispatch({type: "ADD"});
-  };
+    // store.dispatch({type: "ADD"});
+    store.dispatch({
+      type: "ADD_TODO",
+      text: "Read the docs",
+    })
+    store.dispatch({ type: "ADD" })
+  }
 
   asyAdd = () => {
     store.dispatch((dispatch, getState) => {
       setTimeout(() => {
-        dispatch({type: "ADD"});
-        console.log("getState", getState()); //sy-log
-      }, 1000);
-    });
-  };
+        dispatch({ type: "ADD" })
+        console.log("getState", getState()) //sy-log
+      }, 1000)
+    })
+  }
 
   promiseMinus = () => {
     store.dispatch(
       Promise.resolve({
         type: "MINUS",
-        payload: 100
+        payload: 100,
       })
-    );
-  };
+    )
+  }
 
   render() {
+    const { count, todo } = store.getState()
     return (
       <div>
         <h3>ReduxPage</h3>
-        <p>{store.getState()}</p>
+        <p>{count}</p>
+        <p>{todo}</p>
         {/* 
           ! 课后补充： combineReducers用法
          */}
@@ -50,6 +57,6 @@ export default class ReduxPage extends Component {
         <button onClick={this.asyAdd}>asyAdd</button>
         <button onClick={this.promiseMinus}>promise minus</button>
       </div>
-    );
+    )
   }
 }
