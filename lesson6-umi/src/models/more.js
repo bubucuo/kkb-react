@@ -20,7 +20,7 @@ export default {
 
   reducers: {
     productData(state, action) {
-      return { ...state, data: action.payload.data };
+      return { ...state, data: action.payload };
     },
   },
 };
