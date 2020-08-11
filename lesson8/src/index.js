@@ -1,9 +1,9 @@
-// import React from "./kreact/index";
-// import ReactDOM from "./kreact/react-dom";
-// import Component from "./kreact/Component";
+import React from "./kreact/index";
+import ReactDOM from "./kreact/react-dom";
+import Component from "./kreact/Component";
 
-import React, {Component} from "react";
-import ReactDOM from "react-dom";
+// import React, {Component} from "react";
+// import ReactDOM from "react-dom";
 import "./index.css";
 
 class ClassComponent extends Component {
@@ -30,9 +30,9 @@ const jsx = (
     <a href="https://www.kaikeba.com/">开课吧</a>
     <ClassComponent name="class" color="red" />
     <FunctionComponent name="function" />
-    {[1, 2].map(item => (
+    {/* {[1, 2].map(item => (
       <React.Fragment key={item}>{item}</React.Fragment>
-    ))}
+    ))} */}
     {/* <>
       <h1>aaa</h1>
       <h1>bbb</h1>
