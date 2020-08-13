@@ -26,6 +26,7 @@ function FunctionComponent(props) {
     <div className="border">
       函数组件-{props.name}
       <button onClick={() => setCount(count + 1)}>{count} </button>
+      {count % 2 ? <button>click</button> : <span>omg</span>}
     </div>
   );
 }
