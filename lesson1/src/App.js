@@ -6,10 +6,9 @@ import MyRCFieldForm from "./pages/MyRCFieldForm";
 export default function App(props) {
   return (
     <div>
-      <ContextPage />
+      {/* <ContextPage /> */}
       {/* <AntdFormPage /> */}
-      {/* <MyRCFieldForm /> */}
-      {/* <MyRCForm /> */}
+      <MyRCFieldForm />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {ThemeConsumer, UserConsumer} from "../Context";
+import {ThemeConsumer} from "../Context";
 
 export default class ConsumerPage extends Component {
   render() {
@@ -7,12 +7,7 @@ export default class ConsumerPage extends Component {
       <div>
         <h3>ConsumerPage</h3>
         <ThemeConsumer>
-          {context => (
-            <div className={context.themeColor}>
-              omg
-              <UserConsumer>{user => <p>{user.name}</p>}</UserConsumer>
-            </div>
-          )}
+          {themeContext => <div className={themeContext.themeColor}>omg</div>}
         </ThemeConsumer>
       </div>
     );

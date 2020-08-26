@@ -8,6 +8,7 @@ export default class ContextTypePage extends Component {
     const {themeColor} = this.context;
     return (
       <div className="border">
+        天哪
         <h3 className={themeColor}>ContextTypePage</h3>
       </div>
     );
