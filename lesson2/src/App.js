@@ -44,22 +44,22 @@ function f3(arg) {
 
 // !方法3
 // compose的返回值是函数
-function compose(...funcs) {
-  if (funcs.length === 0) {
-    return arg => arg;
-  }
-  if (funcs.length === 1) {
-    return funcs[0];
-  }
-  return funcs.reduce((a, b) => (...args) => a(b(...args)));
-  // return funcs.reduce((a, b) => {
-  //   return (...args) => {
-  //     return a(b(...args));
-  //   };
-  // });
-}
+// function compose(...funcs) {
+//   if (funcs.length === 0) {
+//     return arg => arg;
+//   }
+//   if (funcs.length === 1) {
+//     return funcs[0];
+//   }
+//   return funcs.reduce((a, b) => (...args) => a(b(...args)));
+//   // return funcs.reduce((a, b) => {
+//   //   return (...args) => {
+//   //     return a(b(...args));
+//   //   };
+//   // });
+// }
 
-// 做下适配，参数值可以是0到多个
-let res = compose(f1)("omg");
+// // 做下适配，参数值可以是0到多个
+// let res = compose(f1)("omg");
 
-console.log("res", res); //sy-log
+// console.log("res", res); //sy-log
