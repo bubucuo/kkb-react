@@ -3,6 +3,7 @@ import React from "react";
 // 定义一个仓库
 class FormStore {
   constructor(props) {
+    // 存储数据
     this.store = {};
 
     // 存储下Field 实例
@@ -102,11 +103,16 @@ class FormStore {
 }
 
 // 自定义hook（预习视频里有，去看看）
-export default function useForm() {
+export default function useForm(form) {
   const formRef = React.useRef();
   if (!formRef.current) {
-    const formStore = new FormStore();
-    formRef.current = formStore.getForm();
+    // 实现复用
+    if (form) {
+      formRef.current = form;
+    } else {
+      const formStore = new FormStore();
+      formRef.current = formStore.getForm();
+    }
   }
 
   return [formRef.current];

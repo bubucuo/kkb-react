@@ -1,11 +1,8 @@
-export default function createStore(reducer, enhancer) {
-  if (enhancer) {
-    return enhancer(createStore)(reducer);
-  }
-
+export default function createStore(reducer) {
   let currentState;
   let currentListeners = [];
-  // 获取store state
+
+  // 获取状态
   function getState() {
     return currentState;
   }
@@ -19,17 +16,7 @@ export default function createStore(reducer, enhancer) {
   }
   function subscribe(listener) {
     currentListeners.push(listener);
-    return () => {
-      // 简单置空，大家可以自己实现过滤
-      currentListeners = [];
-
-      //! 课后补充 可以用以下实现过滤
-      // const index = currentListeners.indexOf(listener);
-      // currentListeners.splice(index, 1);
-    };
   }
-
-  dispatch({type: "KKKKREDUX/OOOOOO"});
 
   return {
     getState,
