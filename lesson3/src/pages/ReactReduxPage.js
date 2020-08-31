@@ -3,6 +3,7 @@ import React, {Component} from "react";
 // import {bindActionCreators} from "redux";
 import {bindActionCreators, connect} from "../kReactRedux";
 
+// connect原理 高阶组件（hoc）
 @connect(
   // mapStateToProps 把state放到props上一份
   // ({count}) => ({count}),
@@ -11,29 +12,21 @@ import {bindActionCreators, connect} from "../kReactRedux";
   },
 
   // mapDispatchToProps object|function 把dispatch放到props上一份
-  {
-    add: () => ({type: "ADD"}),
-    minus: () => ({type: "MINUS"})
+  // {
+  //   add: () => ({type: "ADD"}),
+  //   minus: () => ({type: "MINUS"})
+  // }
+
+  dispatch => {
+    let creators = {
+      add: () => ({type: "ADD", payload: 100}),
+      minus: () => ({type: "MINUS", payload: 100})
+    };
+
+    creators = bindActionCreators(creators, dispatch);
+
+    return {dispatch, ...creators};
   }
-
-  // dispatch => {
-  //   let creators = {
-  //     add: () => ({type: "ADD", payload: 100}),
-  //     minus: () => ({type: "MINUS", payload: 100})
-  //   };
-
-  //   creators = bindActionCreators(creators, dispatch);
-
-  //   return {dispatch, ...creators};
-  // }
-  // (stateProps, dispatchProps, ownProps) => {
-  //   return {
-  //     // ...stateProps,
-  //     // ...dispatchProps,
-  //     // ...ownProps,
-  //     omg: "omg"
-  //   };
-  // }
 )
 class ReactReduxPage extends Component {
   render() {
@@ -53,4 +46,4 @@ class ReactReduxPage extends Component {
   }
 }
 export default ReactReduxPage;
-// export default connect()(ReactReduxPage);
+// connect(state => state)(ReactReduxPage);

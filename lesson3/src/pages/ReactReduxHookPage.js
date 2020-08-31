@@ -2,6 +2,7 @@ import React, {useCallback} from "react";
 // import {useSelector, useDispatch} from "react-redux";
 import {useSelector, useDispatch} from "../kReactRedux";
 
+// 获取state和获取dispatch
 export default function ReactReduxHookPage(props) {
   const count = useSelector(({count}) => count);
   const dispatch = useDispatch();
