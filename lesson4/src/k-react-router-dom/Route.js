@@ -1,26 +1,28 @@
 import React, {Component} from "react";
 import {RouterContext} from "./Context";
-import {matchPath} from "react-router";
+import matchPath from "./matchPath";
 
 export default class Route extends Component {
   render() {
     return (
       <RouterContext.Consumer>
         {context => {
-          const {location} = context;
-          const {path, children, component, render, computedMatch} = this.props;
-          const match = computedMatch
-            ? computedMatch
+          const location = context.location;
+          const {path, children, component, render} = this.props;
+          const match = this.props.computedMatch
+            ? this.props.computedMatch
             : path
             ? matchPath(location.pathname, this.props)
             : context.match;
+
           const props = {
             ...context,
-            location,
             match
           };
-          //match children, component, render | null
-          //不match children function | null
+          // match 渲染三者之一 children（function或者节点） component render或者null
+          // 不match 渲染children（function）或者null
+          //return match ? React.createElement(component) : null;
+
           return (
             <RouterContext.Provider value={props}>
               {match

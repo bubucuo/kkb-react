@@ -5,11 +5,11 @@ export default class Link extends Component {
   static contextType = RouterContext;
   handleClick = e => {
     e.preventDefault();
-    // 命令式
+    // 手动跳转
     this.context.history.push(this.props.to);
   };
   render() {
-    const {to, children, ...restProps} = this.props;
+    const {children, to, ...restProps} = this.props;
     return (
       <a href={to} {...restProps} onClick={this.handleClick}>
         {children}

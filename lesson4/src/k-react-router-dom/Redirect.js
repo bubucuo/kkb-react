@@ -1,35 +1,22 @@
 import React, {Component} from "react";
 import {RouterContext} from "./Context";
-
+import LifeCycle from "./LifeCycle";
 export default class Redirect extends Component {
+  // ! render是要返回ui的，也就是当前组件的子节点， 你跳转走了 ，就没了children了
   render() {
     return (
       <RouterContext.Consumer>
         {context => {
-          const {history} = context;
           const {to, push = false} = this.props;
           return (
-            <LiceCycle
+            <LifeCycle
               onMount={() => {
-                // 兼容了to是字符串，在源码中要处理to是字符串和对象两个情况
-                push ? history.push(to) : history.replace(to);
+                push ? context.history.push(to) : context.history.replace(to);
               }}
             />
           );
         }}
       </RouterContext.Consumer>
     );
-  }
-}
-
-class LiceCycle extends Component {
-  componentDidMount() {
-    if (this.props.onMount) {
-      this.props.onMount.call(this, this);
-    }
-  }
-
-  render() {
-    return null;
   }
 }

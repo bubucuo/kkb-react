@@ -1,11 +1,13 @@
+import React, {Component} from "react";
 import {RouterContext} from "./Context";
-import React from "react";
 
-// hoc 这是个高阶组件
-const withRouter = WrappedComponent => props => {
+// hoc
+const withRouter = WarppedComponent => props => {
   return (
     <RouterContext.Consumer>
-      {context => <WrappedComponent {...props} {...context} />}
+      {context => {
+        return <WarppedComponent {...props} {...context} />;
+      }}
     </RouterContext.Consumer>
   );
 };

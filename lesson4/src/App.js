@@ -1,17 +1,4 @@
 import React from "react";
-// import {
-//   BrowserRouter as Router,
-//   Route,
-//   Link,
-//   Switch,
-//   useRouteMatch,
-//   useHistory,
-//   useLocation,
-//   useParams,
-//   withRouter,
-//   Prompt
-// } from "react-router-dom";
-
 import {
   BrowserRouter as Router,
   Route,
@@ -23,19 +10,31 @@ import {
   useParams,
   withRouter,
   Prompt
-} from "./k-react-router-dom/";
+} from "react-router-dom";
+
+// import {
+//   BrowserRouter as Router,
+//   Route,
+//   Link,
+//   Switch,
+//   useRouteMatch,
+//   useHistory,
+//   useLocation,
+//   useParams,
+//   withRouter
+//   // Prompt
+// } from "./k-react-router-dom/";
 
 import HomePage from "./pages/HomePage";
 import UserPage from "./pages/UserPage";
 import LoginPage from "./pages/LoginPage";
 import _404Page from "./pages/_404Page";
-import RouteComponentPage from "./pages/RouteComponentPage";
+// import RouteComponentPage from "./pages/RouteComponentPage";
 import WelcomePage from "./pages/WelcomePage";
 
 export default function App(props) {
   return (
     <div className="app">
-      {/* <RouteComponentPage /> */}
       <Router>
         <Link to="/">首页</Link>
         <Link to="/user">用户中心</Link>
@@ -46,7 +45,7 @@ export default function App(props) {
           <Route
             exact
             path="/"
-            // children={children}
+            //children={children}
             component={HomePage}
             //render={render}
           />
@@ -54,14 +53,38 @@ export default function App(props) {
           <Route path="/login" component={LoginPage} />
           {/* <Route path="/product/:id" component={Product} /> */}
           <Route path="/product/:id" render={() => <Product />} />
+
           <Route path="/welcome" component={WelcomePage} />
 
+          {/* 这里没有path值，用的是Router默认的match，默认是匹配的 */}
           <Route component={_404Page} />
         </Switch>
       </Router>
     </div>
   );
 }
+
+// function Product(props) {
+//   console.log("Product-props", props); //sy-log
+
+//   const match = useRouteMatch();
+//   const history = useHistory();
+//   const location = useLocation();
+//   const params = useParams();
+
+//   const {url} = match;
+//   const {id} = params;
+
+//   console.log("route props", match, history, location, params); //sy-log
+//   return (
+//     <div>
+//       <h1>Product</h1>
+//       <p>id:{id}</p>
+//       <Link to={url + "/detail"}>详情</Link>
+//       <Route path={url + "/detail"} component={Detail} />
+//     </div>
+//   );
+// }
 
 @withRouter
 class Product extends React.Component {
@@ -70,7 +93,8 @@ class Product extends React.Component {
     this.state = {confirm: true};
   }
   render() {
-    const {id} = this.props.match.params;
+    const {params} = this.props.match;
+    const {id} = params;
     console.log("props", this.props); //sy-log
     return (
       <div>
@@ -87,29 +111,10 @@ class Product extends React.Component {
   }
 }
 
-// function Product(props) {
-//   const match = useRouteMatch();
-//   const history = useHistory();
-//   const location = useLocation();
-//   const _params = useParams();
-//   console.log("match", match); //sy-log
-//   // const {match} = props;
-//   const {params, url} = match;
-//   const {id} = params;
-
-//   return (
-//     <div>
-//       Product:{id}
-//       <Link to={url + "/detail"}>详情</Link>
-//       <Route path={url + "/detail"} component={Detail} />
-//     </div>
-//   );
-// }
-
-function Detail({match}) {
+function Detail(props) {
   return (
     <div>
-      <h1>detail</h1>
+      <h1>商品详情页</h1>
     </div>
   );
 }
