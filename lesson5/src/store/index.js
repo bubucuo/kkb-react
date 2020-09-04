@@ -1,9 +1,8 @@
 import {loginReducer} from "./loginReducer";
 import {createStore, combineReducers, applyMiddleware} from "redux";
-// import thunk from "redux-thunk";
+import thunk from "redux-thunk";
 import createSagaMiddleware from "redux-saga";
-// import loginSaga from "../action/loginSaga";
-import rootSaga from "../action/rootSaga";
+import loginSaga from "../action/loginSaga";
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -13,6 +12,5 @@ const store = createStore(
   applyMiddleware(sagaMiddleware)
 );
 
-sagaMiddleware.run(rootSaga);
-
+sagaMiddleware.run(loginSaga);
 export default store;

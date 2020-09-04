@@ -1,46 +1,47 @@
 import React, {Component} from "react";
-import {Route, Redirect} from "react-router-dom";
+import {Redirect} from "react-router-dom";
 import {connect} from "react-redux";
 import {login} from "../action/user";
 
-export default connect(
-  ({user}) => ({
-    isLogin: user.isLogin,
-    loading: user.loading,
-    err: user.err
-  }),
+// 1、location 从哪来?  location是route props的
+// 2、connect 的参数
+
+// mapStateToProps 把store state映射到props上
+// mapDispatchToProps 把dispatch映射到props上
+// 3、为什么dispatch 之后页面就跳转了？
+@connect(
+  ({user}) => ({isLogin: user.isLogin, loading: user.loading, err: user.err}),
   {
-    login
+    login //: userInfo => ({type: "LOGIN_SUCCESS", payload: userInfo})
   }
-)(
-  class LoginPage extends Component {
-    constructor(props) {
-      super(props);
-      this.state = {name: ""};
-    }
-    nameChange = e => {
-      this.setState({name: e.target.value});
-    };
-    render() {
-      const {isLogin, location, login, err, loading} = this.props;
-      // console.log("LoginPage", this.props); //sy-log
-      if (isLogin) {
-        // 已经登录了
-        const {from = "/"} = location.state || {};
-        return <Redirect to={from} />;
-      }
-      // 没有登录的话 展示登录页面
-      const {name} = this.state;
-      return (
-        <div>
-          <h3>LoginPage</h3>
-          <input type="text" value={name} onChange={this.nameChange} />
-          <button onClick={() => login({name})}>
-            {loading ? "loading..." : "click login"}
-          </button>
-          <p className="red">{err.msg}</p>
-        </div>
-      );
-    }
+)
+class LoginPage extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {name: ""};
   }
-);
+  nameChange = e => {
+    this.setState({name: e.target.value});
+  };
+  render() {
+    const {isLogin, location, dispatch, login, loading, err} = this.props;
+    // 登录
+    if (isLogin) {
+      const {from = "/"} = location.state || {};
+      return <Redirect to={from} />;
+    }
+    const {name} = this.state;
+    return (
+      <div>
+        <h3>LoginPage</h3>
+        <input value={name} onChange={this.nameChange} />
+        <button onClick={() => login({name})}>
+          {loading ? "loading..." : "login"}
+        </button>
+        <p className="red">{err.msg}</p>
+      </div>
+    );
+  }
+}
+
+export default LoginPage;

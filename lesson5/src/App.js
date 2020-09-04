@@ -5,15 +5,13 @@ export default function App(props) {
   return <Routes />;
 }
 
-// function与函数名之间有个*
-// 函数体内部使用yiled表达式，定义不同内部状态
-// yield只能用在generator
-
+//  function 与函数名多了个星号
+// 函数内部yield表达式，定义内部状态
+//注意事项： yield只能用在generator里
 // function* helloWorldGenerator() {
 //   yield "hello";
 //   yield "world";
-//   return "omg";
-//   yield "ending";
+//   return "ending";
 // }
 
 // var hw = helloWorldGenerator();
@@ -30,10 +28,7 @@ export default function App(props) {
 //   return aa;
 // }
 
-// console.log("fun0", a); //sy-log
-
+// console.log("fun0", a);
 // let b = fun();
-
-// console.log("fun1", a); //sy-log
-
-// console.log("fun2", a, b.next()); //sy-log
+// console.log("fun", b.next()); //注释下这句试试，比较下前后a的值
+// console.log("fun1", a);

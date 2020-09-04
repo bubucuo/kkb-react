@@ -1,49 +1,28 @@
-import {LOGIN_SAGA, LOGIN_SUCCESS, REQUEST, LOGIN_FAILURE} from "./const.js";
+// （thunk）异步请求 call
+// （dispatch）更新状态 put
+
+import {call, put, takeEvery} from "redux-saga/effects";
 import LoginService from "../service/login";
-import {call, put, take, fork} from "redux-saga/effects";
-// 调用异步操作 call
-// 状态更新 （dispatch）put
-// 做监听 take takeEvery
 
 // worker saga
 function* loginHandle(action) {
-  yield put({
-    type: REQUEST
-  });
+  yield put({type: "REQUEST"});
   try {
-    // 调用异步操作
-    const res = yield call(LoginService.login, action.payload);
-    const res2 = yield call(LoginService.getMoreUserInfo, res);
-    yield put({
-      type: LOGIN_SUCCESS,
-      payload: res2
-    });
+    // 同步的方式执行异步
+    // call是阻塞
+    // fork 是非阻塞
+    const res1 = yield call(LoginService.login, action.payload);
+    const res2 = yield call(LoginService.getMoreUserInfo, res1);
+    // 更新state
+    yield put({type: "LOGIN_SUCCESS", payload: res2});
   } catch (err) {
-    yield put({
-      type: LOGIN_FAILURE,
-      payload: err
-    });
+    yield put({type: "LOGIN_FAILURE", payload: err});
   }
 }
 
 // watcher saga
 function* loginSaga() {
-  yield takeEvery(LOGIN_SAGA, loginHandle);
-  // while (true) {
-  //   const action = yield take(LOGIN_SAGA);
-  //   // call 是阻塞型的
-  //   // fork 无阻塞型
-  //   yield fork(loginHandle, action);
-  //   console.log("action", action);
-  // }
+  yield takeEvery("LOGIN_SAGA", loginHandle);
 }
 
 export default loginSaga;
-
-const takeEvery = (pattern, saga, ...args) =>
-  fork(function*() {
-    while (true) {
-      const action = yield take(pattern);
-      yield fork(saga, ...args.concat(action));
-    }
-  });
