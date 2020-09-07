@@ -1,3 +1,4 @@
+// const { app, models: resolveModels, component: resolveComponent } = config;
 import dynamic from "dva/dynamic";
 import app from "../app";
 

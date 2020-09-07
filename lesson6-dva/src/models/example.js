@@ -1,5 +1,8 @@
 import { getProductData } from "../services/product";
 
+// {
+//  _namespace : {//具体的model}
+// }
 export default {
   namespace: "example",
 
@@ -29,6 +32,7 @@ export default {
     }
   },
 
+  // 定义了修改规则
   reducers: {
     // save(state, action) {
     //   return { ...state, ...action.payload };

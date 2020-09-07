@@ -1,6 +1,8 @@
 import dva from "dva";
 
-// 1. Initialize
+// // 1. Initialize
+// const app = dva();
+
 const createHistory = require("history").createBrowserHistory;
 
 const app = dva({

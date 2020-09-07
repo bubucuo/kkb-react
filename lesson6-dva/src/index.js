@@ -2,7 +2,9 @@
 import app from "./app";
 import "./index.css";
 
-// 1. Initialize
+// // // 1. Initialize
+// // const app = dva();
+
 // const createHistory = require("history").createBrowserHistory;
 
 // const app = dva({
@@ -13,7 +15,6 @@ import "./index.css";
 // app.use({});
 
 // 3. Model
-// 注册model
 app.model(require("./models/example").default);
 // app.model(require("./models/user").default);
 
@@ -22,4 +23,3 @@ app.router(require("./router").default);
 
 // 5. Start
 app.start("#root");
-// console.log("app---", app); //sy-log
