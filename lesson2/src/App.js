@@ -1,10 +1,12 @@
 import React from "react";
 import ReduxPage from "./pages/ReduxPage";
+import UserPage from "./pages/UserPage";
 
 export default function App(props) {
   return (
     <div>
       <ReduxPage />
+      <UserPage />
     </div>
   );
 }
