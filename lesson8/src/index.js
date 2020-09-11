@@ -8,12 +8,7 @@ import "./index.css";
 
 class ClassComponent extends Component {
   render() {
-    return (
-      <div className="border">
-        {this.props.name}
-        <p className={this.props.color}>color omg</p>
-      </div>
-    );
+    return <div className="border">{this.props.name}</div>;
   }
 }
 
@@ -25,7 +20,7 @@ const jsx = (
   <div className="border">
     <p>全栈</p>
     <a href="https://www.kaikeba.com/">开课吧</a>
-    <ClassComponent name="class component" />
+    {/* <ClassComponent name="class component" /> */}
     <FunctionComponent name="function component" />
   </div>
 );
