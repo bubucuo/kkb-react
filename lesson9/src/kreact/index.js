@@ -5,28 +5,14 @@ function createElement(type, config, ...children) {
     delete config.__self;
     delete config.__source;
   }
+  // ! 今天先不考虑key和ref
 
-  // let defaultProps = {};
-  // if (type && type.defaultProps) {
-  //   defaultProps = {...type.defaultProps};
-  // }
-  // ! 源码中做了详细处理，比如过滤掉key、ref等
   const props = {
-    // ...defaultProps,
     ...config,
     children: children.map(child =>
       typeof child === "object" ? child : createTextNode(child)
     )
   };
-
-  if (type && type.defaultProps) {
-    const defaultProps = type.defaultProps;
-    for (let propName in defaultProps) {
-      if (props[propName] === undefined) {
-        props[propName] = defaultProps[propName];
-      }
-    }
-  }
 
   return {
     type,
@@ -34,6 +20,7 @@ function createElement(type, config, ...children) {
   };
 }
 
+// 把文本节点变成对象的形式，方便统一简洁处理，源码当中没这样
 function createTextNode(text) {
   return {
     type: TEXT,
@@ -44,6 +31,4 @@ function createTextNode(text) {
   };
 }
 
-export default {
-  createElement
-};
+export default {createElement};

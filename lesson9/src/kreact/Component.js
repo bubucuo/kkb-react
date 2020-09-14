@@ -5,4 +5,8 @@ class Component {
   }
 }
 
+// function Component(props) {
+//   this.props = props;
+// }
+
 export default Component;
