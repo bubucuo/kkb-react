@@ -148,7 +148,8 @@ function updateNode(node, prevVal, nextVal) {
       // 只要是on开头，我就判断是事件
       if (k.slice(0, 2) === "on") {
         let eventName = k.slice(2).toLowerCase();
-        node.addEventListener(eventName, prevVal[k]);
+        // ! 课上写出add了 是删除 是删除 是删除
+        node.removeEventListener(eventName, prevVal[k]);
       } else {
         if (!(k in nextVal)) {
           node[k] = "";
