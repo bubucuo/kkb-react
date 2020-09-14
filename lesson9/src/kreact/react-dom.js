@@ -99,8 +99,6 @@ function reconcileChildren(workInProgress, children) {
         return: workInProgress,
         effectTag: UPDATE
       };
-
-      console.log("000000---", newFiber); //sy-log
     }
     if (!sameType && child) {
       // 节点插入
