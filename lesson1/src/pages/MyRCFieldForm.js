@@ -19,8 +19,8 @@ export default function MyRCFieldForm(props) {
   };
 
   useEffect(() => {
-    console.log("form", form); //sy-log
-    form.setFieldsValue({username: "default"});
+    // console.log("form", form); //sy-log
+    // form.setFieldsValue({username: "default"});
   }, []);
 
   return (

@@ -42,7 +42,7 @@ export default class ContextPage extends Component {
   }
 }
 
-// 使用contetx的步骤
+// ! 使用contetx的步骤
 
 // step1: 创建一个context对象
 // step2: 使用这个context对象的Provder传递
