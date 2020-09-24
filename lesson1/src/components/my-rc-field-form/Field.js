@@ -8,10 +8,18 @@ export default class Field extends Component {
   static contextType = FieldContext;
 
   componentDidMount() {
-    this.context.registerField(this);
+    this.unregisterField = this.context.registerField(this);
+  }
+
+  componentWillUnmount() {
+    // 清除对应的数据
+    if (this.unregisterField) {
+      this.unregisterField();
+    }
   }
 
   onStoreChange = () => {
+    // 这个事件执行的前提是组件还没有被卸载
     this.forceUpdate();
   };
 

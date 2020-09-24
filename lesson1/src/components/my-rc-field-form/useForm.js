@@ -10,6 +10,11 @@ class FormStore {
   // 注册Field实例
   registerField = entity => {
     this.fieldEntities.push(entity);
+    // 执行清理操作
+    return () => {
+      this.fieldEntities = this.fieldEntities.filter(item => item !== entity);
+      delete this.store[entity.props.name];
+    };
   };
 
   setCallback = callback => {
@@ -94,12 +99,16 @@ class FormStore {
   };
 }
 
-export default function useForm() {
+export default function useForm(form) {
   // 这里用useRef可以帮助我们做缓存，方便复用,useRef是个hook方法
   const fromRef = useRef();
   if (!fromRef.current) {
-    const formStore = new FormStore();
-    fromRef.current = formStore.getForm();
+    if (form) {
+      fromRef.current = form;
+    } else {
+      const formStore = new FormStore();
+      fromRef.current = formStore.getForm();
+    }
   }
   return [fromRef.current];
 }
