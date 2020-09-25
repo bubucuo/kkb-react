@@ -33,6 +33,10 @@ export default class ReduxPage extends Component {
     // }, 1000);
   };
 
+  asyPromise = () => {
+    store.dispatch(Promise.resolve({type: "ADD"}));
+  };
+
   render() {
     return (
       <div>
@@ -45,6 +49,7 @@ export default class ReduxPage extends Component {
 
         <button onClick={this.add}>add</button>
         <button onClick={this.asyAdd}>asyAdd</button>
+        <button onClick={this.asyPromise}>asyPromise</button>
       </div>
     );
   }
