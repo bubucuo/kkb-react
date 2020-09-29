@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-// import {Redirect} from "../k-react-router-dom/";
+import {Redirect} from "react-router-dom/";
 
 export default class HomePage extends Component {
   render() {
