@@ -4,6 +4,8 @@ import "./index.css";
 import App from "./App";
 import {Provider} from "react-redux";
 import store from "./store/";
+import "./static/js/flexible";
+import "./static/style/iconfont/iconfont.css";
 
 // 跨层级传递store
 ReactDOM.render(
@@ -12,6 +14,12 @@ ReactDOM.render(
   </Provider>,
   document.getElementById("root")
 );
+
+// todo
+// redux 管理状态 存储store state
+// react-redux 传递store state，背后原理Context、hoc（connect）
+// react-router-dom 管理路由，背后原理也是Context、也有hoc(withRouter)
+// ------
 
 //  Generator函数与普通函数不同
 
