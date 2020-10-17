@@ -1,9 +1,9 @@
-import React, {Component} from "react";
-import ReactDOM from "react-dom";
+// import React, {Component} from "react";
+// import ReactDOM from "react-dom";
 
-// import React from "./kreact/";
-// import ReactDOM from "./kreact/react-dom";
-// import Component from "./kreact/Component";
+import React from "./kreact/";
+import ReactDOM from "./kreact/react-dom";
+import Component from "./kreact/Component";
 
 import "./index.css";
 
@@ -36,6 +36,17 @@ const jsx = (
     <a href="https://www.kaikeba.com/">开课吧</a>
     <FunctionComponent name="函数组件" />
     <ClassComponent name="类组件" color="red" />
+    {/* {[1, 2, 3].map(item => (
+      < >
+        <p>1</p>
+        <p>2</p>
+      </>
+    ))} */}
+
+    {/* <>
+      <p>1</p>
+      <p>2</p>
+    </> */}
   </div>
 );
 
@@ -45,4 +56,5 @@ ReactDOM.render(jsx, document.getElementById("root"));
 console.log("vserion", React.version); //sy-log
 // 原生标签节点
 // 文本节点
-//
+// 函数组件
+// 类组件
