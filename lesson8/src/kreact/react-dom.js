@@ -94,7 +94,7 @@ function updateHostComponent(fiber) {
 
   const {children} = fiber.props;
   reconcileChildren(fiber, children);
-  console.log("fiber", fiber); //sy-log
+  // console.log("fiber", fiber); //sy-log
 }
 
 // 遍历下子vnode，然后把子vnode->真实DOM节点，再插入父node中
