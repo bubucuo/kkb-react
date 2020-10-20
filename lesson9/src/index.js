@@ -24,6 +24,8 @@ class ClassComponent extends Component {
 function FunctionComponent(props) {
   const [count, setCount] = useState(0);
 
+  // 上一次 className border 这个属性存在fiber，更新之后这个属性存在fiber.base.props
+  // 更新之后  更新阶段执行updateNode
   return (
     <div className="border">
       FunctionComponent
@@ -34,6 +36,7 @@ function FunctionComponent(props) {
         }}>
         count: {count}
       </button>
+      {count % 2 ? <button>omg</button> : <a>omg</a>}
     </div>
   );
 }
