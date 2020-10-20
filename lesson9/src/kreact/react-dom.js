@@ -76,13 +76,12 @@ function updateFunctionComponent(fiber) {
 
 // 返回真实dom节点
 // 先实例化，再执行render函数
-// todo 您的作业
-function updateClassComponent(vnode) {
-  const {type, props} = vnode;
-  const instance = new type(props);
-  const vvnode = instance.render();
-  const node = createNode(vvnode);
-  return node;
+function updateClassComponent(fiber) {
+  const {type, props} = fiber;
+  let cmp = new type(props);
+  let vvnode = cmp.render();
+  const children = [vvnode];
+  reconcileChildren(fiber, children);
 }
 
 // 原生标签节点更新
