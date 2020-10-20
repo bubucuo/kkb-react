@@ -5,6 +5,8 @@ let nextUnitOfWork = null;
 // work in progress 正在工作当中的
 // 正在工作当中的fiber root
 let wipRoot = null;
+// 当前正在工作的fiber
+let wipFiber = null;
 
 // ! fiber数据结构
 // type 标记fiber的类型
@@ -44,14 +46,15 @@ function createNode(vnode) {
     node = document.createTextNode("");
   } else if (typeof type === "string") {
     node = document.createElement(type);
-  } else if (typeof type === "function") {
-    node = type.prototype.isReactComponent
-      ? updateClassComponent(vnode)
-      : updateFunctionComponent(vnode);
-  } else {
-    // * 这个地方是个简写，源码当中没有生成Fragment，直接协调的子节点
-    node = document.createDocumentFragment();
   }
+  // else if (typeof type === "function") {
+  //   node = type.prototype.isReactComponent
+  //     ? updateClassComponent(vnode)
+  //     : updateFunctionComponent(vnode);
+  // } else {
+  //   // * 这个地方是个简写，源码当中没有生成Fragment，直接协调的子节点
+  //   node = document.createDocumentFragment();
+  // }
   // reconcileChildren(props.children, node);
   updateNode(node, props);
   return node;
@@ -61,14 +64,24 @@ function updateNode(node, nextVal) {
   Object.keys(nextVal)
     .filter(k => k !== "children")
     .forEach(k => {
-      // node.setAttributes(k, nextVal[k]);
-      node[k] = nextVal[k];
+      // ! 瞎写一下
+      // 判断一下，这里以on开头就是合成事件
+      if (k.slice(0, 2) === "on") {
+        let eventName = k.slice(2).toLowerCase();
+        node.addEventListener(eventName, nextVal[k]);
+      } else {
+        node[k] = nextVal[k];
+      }
     });
 }
 
 // 返回真实dom节点
 // 执行函数
 function updateFunctionComponent(fiber) {
+  wipFiber = fiber;
+  wipFiber.hooks = [];
+  wipFiber.hookIndex = 0;
+
   const {type, props} = fiber;
   let children = [type(props)];
   reconcileChildren(fiber, children);
@@ -197,6 +210,27 @@ function commitWorker(fiber) {
 
   commitWorker(fiber.child);
   commitWorker(fiber.sibling);
+}
+
+export function useState(init) {
+  // 老的hook
+  const oldHook = wipFiber.base && wipFiber.base.hooks[wipFiber.hookIndex];
+
+  // 当前要返回的hook
+  const hook = {
+    state: oldHook ? oldHook.state : init, //存储状态值
+    queue: oldHook ? oldHook.queue : [] // 存储要更新的状态值
+  };
+
+  // 模拟一下批量处理
+  hook.queue.forEach(action => (hook.state = action));
+
+  // state 、setState存到fiber上
+  const setState = () => {
+    console.log("hahhah"); //sy-log
+  };
+  // todo
+  return [hook.state, setState];
 }
 
 export default {render};
