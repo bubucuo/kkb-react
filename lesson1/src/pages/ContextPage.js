@@ -3,7 +3,6 @@ import {ThemeProvider} from "../Context";
 import ConsumerPage from "./ConsumerPage";
 import ContextTypePage from "./ContextTypePage";
 import UseContextPage from "./UseContextPage";
-
 import {Button} from "antd";
 
 export default class ContextPage extends Component {
