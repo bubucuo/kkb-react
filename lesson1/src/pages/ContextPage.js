@@ -3,6 +3,9 @@ import {ThemeProvider} from "../Context";
 import ConsumerPage from "./ConsumerPage";
 import ContextTypePage from "./ContextTypePage";
 import UseContextPage from "./UseContextPage";
+
+import {Button} from "antd";
+
 export default class ContextPage extends Component {
   constructor(props) {
     super(props);
@@ -27,7 +30,9 @@ export default class ContextPage extends Component {
     return (
       <div>
         <h3>ContextPage</h3>
-        <button onClick={this.changeColor}>change color</button>
+        <Button type="primary" onClick={this.changeColor}>
+          change color
+        </Button>
         <ThemeProvider value={theme}>
           <ConsumerPage />
           <ContextTypePage />
