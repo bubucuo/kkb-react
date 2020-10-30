@@ -1,13 +1,20 @@
 import React, {Component} from "react";
-import {ThemeConsumer} from "../Context";
+import {ThemeConsumer, UserConsumer} from "../Context";
 
 export default class ConsumerPage extends Component {
   render() {
     return (
-      <div>
+      <div className="border">
         <h3>ConsumerPage</h3>
         <ThemeConsumer>
-          {themeContext => <div className={themeContext.themeColor}>omg</div>}
+          {themeContext => (
+            <div className={themeContext.themeColor}>
+              themeColor
+              <UserConsumer>
+                {userContext => <p>user: {userContext.name}</p>}
+              </UserConsumer>
+            </div>
+          )}
         </ThemeConsumer>
       </div>
     );
