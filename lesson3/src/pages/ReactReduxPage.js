@@ -9,20 +9,20 @@ import {bindActionCreators} from "../kReactRedux";
 // connect原理 高阶组件（hoc）
 @connect(
   // mapStateToProps 把state映射到props
-  ({count}) => ({count})
+  ({count}) => ({count}),
   // mapDispatchToProps object| function
   // {add: () => ({type: "ADD"}), minus: () => ({type: "MINUS"})}
 
-  // dispatch => {
-  //   let creators = {
-  //     add: () => ({type: "ADD"}),
-  //     minus: () => ({type: "MINUS"})
-  //   };
+  dispatch => {
+    let creators = {
+      add: () => ({type: "ADD"}),
+      minus: () => ({type: "MINUS"})
+    };
 
-  //   creators = bindActionCreators(creators, dispatch);
+    creators = bindActionCreators(creators, dispatch);
 
-  //   return {dispatch, ...creators};
-  // }
+    return {dispatch, ...creators};
+  }
 )
 class ReactReduxPage extends Component {
   render() {
