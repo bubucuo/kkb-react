@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {RouterContext} from "./Context";
+import {RouterContext} from "./RouterContext";
 
 export default class Redirect extends Component {
   render() {
