@@ -1,19 +1,30 @@
-import {useState} from "react";
+import React, {useState} from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Switch,
+  Redirect,
+  useHistory,
+  useLocation,
+  useRouteMatch,
+  useParams,
+  withRouter,
+  Prompt
+} from "react-router-dom";
+
 // import {
 //   BrowserRouter as Router,
 //   Route,
 //   Link,
 //   Switch,
-//   Redirect
-// } from "react-router-dom";
-
-import {
-  BrowserRouter as Router,
-  Route,
-  Link
-  // Switch,
-  // Redirect
-} from "./k-react-router-dom/";
+//   useHistory,
+//   useLocation,
+//   useRouteMatch,
+//   useParams,
+//   withRouter
+//   // Redirect
+// } from "./k-react-router-dom/";
 
 import HomePage from "./pages/HomePage";
 import UserPage from "./pages/UserPage";
@@ -31,14 +42,13 @@ function App() {
         }}>
         add: {count}
       </button>
-      {count % 2 && (
-        <Router>
-          <Link to="/">首页</Link>
-          <Link to="/user">用户中心</Link>
-          <Link to="/login">登录</Link>
-          <Link to="/product/123">商品</Link>
+      <Router>
+        <Link to="/">首页</Link>
+        <Link to="/user">用户中心</Link>
+        <Link to="/login">登录</Link>
+        <Link to="/product/123">商品</Link>
 
-          {/* <Switch> */}
+        <Switch>
           <Route
             path="/"
             exact
@@ -46,35 +56,72 @@ function App() {
             component={HomePage}
             // ! 下面写法影响性能
             //component={() => <HomePage />}
+
             // render={render}
           />
-          {/* <Route path="/product/:id" component={Product} /> */}
+          <Route
+            path="/product/:id"
+            // component={Product}
+            render={() => <Product />}
+          />
           <Route path="/user" component={UserPage} />
           <Route path="/login" component={LoginPage} />
           <Route component={_404Page} />
-          {/* </Switch> */}
-        </Router>
-      )}{" "}
+        </Switch>
+      </Router>
     </div>
   );
 }
 
 export default App;
 
-function Product(props) {
-  console.log("props", props); //sy-log
-  const {match} = props;
-  const {url} = match;
-  const {id} = match.params;
+@withRouter
+class Product extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {confirm: true};
+  }
+  render() {
+    const {match} = this.props;
+    const {url} = match;
+    const {id} = match.params;
 
-  return (
-    <div>
-      Product:{id}
-      <Link to={url + "/detail"}>详情</Link>
-      <Route path={url + "/detail"} component={Detail} />
-    </div>
-  );
+    return (
+      <div>
+        Product:{id}
+        <Link to={url + "/detail"}>详情</Link>
+        <Route path={url + "/detail"} component={Detail} />
+        <Prompt
+          when={this.state.confirm}
+          // message="Are you sure you want to leave?"
+          message={location => {
+            return "Are you sure you want to leave-fun";
+          }}
+        />
+      </div>
+    );
+  }
 }
+
+// function Product(props) {
+//   const history = useHistory();
+//   const location = useLocation();
+//   const match = useRouteMatch();
+//   const params = useParams();
+
+//   console.log("props", match, params); //sy-log
+//   // const {match} = props;
+//   const {url} = match;
+//   const {id} = match.params;
+
+//   return (
+//     <div>
+//       Product:{id}
+//       <Link to={url + "/detail"}>详情</Link>
+//       <Route path={url + "/detail"} component={Detail} />
+//     </div>
+//   );
+// }
 
 function Detail(props) {
   console.log("Detail props", props); //sy-log
