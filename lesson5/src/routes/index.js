@@ -4,6 +4,7 @@ import HomePage from "../pages/HomePage";
 import UserPage from "../pages/UserPage";
 import _404Page from "../pages/_404Page";
 import LoginPage from "../pages/LoginPage";
+import PrivateRoute from "./PrivateRoute";
 
 export default function Routes(props) {
   return (
@@ -15,7 +16,8 @@ export default function Routes(props) {
       <Switch>
         <Route exact path="/" component={HomePage} />
         <Route path="/login" component={LoginPage} />
-        <Route path="/user" component={UserPage} />
+        {/* <Route path="/user" component={UserPage} /> */}
+        <PrivateRoute path="/user" component={UserPage} />
         <Route component={_404Page} />
       </Switch>
     </Router>
