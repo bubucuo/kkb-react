@@ -6,7 +6,9 @@ import {login} from "../action/user";
 
 @connect(
   state => ({
-    isLogin: state.user.isLogin
+    isLogin: state.user.isLogin,
+    err: state.user.err,
+    loading: state.user.loading
   }),
   {
     login
@@ -22,7 +24,7 @@ class LoginPage extends Component {
     this.setState({name: e.target.value});
   };
   render() {
-    const {isLogin, location, dispatch, login} = this.props;
+    const {isLogin, location, dispatch, login, err, loading} = this.props;
     const {from = "/"} = location.state || {};
     if (isLogin) {
       return <Redirect to={from} />;
@@ -33,7 +35,10 @@ class LoginPage extends Component {
       <div>
         <h3>LoginPage</h3>
         <input type="text" value={name} onChange={this.nameChange} />
-        <button onClick={() => login({name})}>click login</button>
+        <p className="red">{err.msg}</p>
+        <button onClick={() => login({name})}>
+          {loading ? "loading..." : "click login"}
+        </button>
       </div>
     );
   }
