@@ -1,15 +1,12 @@
-// import dva from "dva";
-import app from "./app";
+import dva from "dva";
 import "./index.css";
 
-// // // 1. Initialize
-// // const app = dva();
+// 1. Initialize
+const createHistory = require("history").createBrowserHistory;
 
-// const createHistory = require("history").createBrowserHistory;
-
-// const app = dva({
-//   history: createHistory()
-// });
+export const app = dva({
+  history: createHistory()
+});
 
 // 2. Plugins
 // app.use({});
