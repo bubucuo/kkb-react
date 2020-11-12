@@ -11,3 +11,5 @@ const jsx = (
 );
 
 ReactDOM.render(jsx, document.getElementById("root"));
+
+// console.log("react version ", React.version); //sy-log
