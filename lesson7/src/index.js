@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 
 import "./index.css";
@@ -11,5 +11,3 @@ const jsx = (
 );
 
 ReactDOM.render(jsx, document.getElementById("root"));
-
-console.log("react version", React.version); //sy-log
