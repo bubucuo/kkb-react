@@ -1,5 +1,3 @@
-import {PLACEMENT} from "./const";
-
 // vnode 虚拟dom节点
 // node 真实dom节点
 
@@ -7,101 +5,61 @@ import {PLACEMENT} from "./const";
 function render(vnode, container) {
   wipRoot = {
     stateNode: container,
-    props: {children: [vnode]}
+    props: {children: vnode}
   };
+
   nextUnitOfWork = wipRoot;
 }
 
-function createNode(fiber) {
+function createNode(workInProgress) {
   let node = null;
   // todo vnode->node
 
-  const {type, props} = fiber;
+  const {type, props} = workInProgress;
+
   if (typeof type === "string") {
     // 原生标签
     node = document.createElement(type);
-    updateNode(node, props);
   }
+
+  updateNode(node, props);
 
   return node;
 }
 
-function reconcileChildren(workInProgressFiber, children) {
-  if (
-    !(
-      workInProgressFiber.props &&
-      typeof workInProgressFiber.props.children !== "string"
-    )
-  ) {
-    return;
-  }
-
-  let newChildren = Array.isArray(children) ? children : [children];
-
-  //  构建fiber结构
-  // 更新 删除 新增
-  let previousNewFiber = null;
-  for (let i = 0; i < newChildren.length; i++) {
-    let child = newChildren[i];
-    let newFiber = null;
-    console.log("child", child); //sy-log
-    newFiber = {
-      type: child.type,
-      props: child.props,
-      stateNode: null,
-      child: null,
-      sibling: null,
-      return: workInProgressFiber,
-      effectTag: PLACEMENT
-    };
-
-    // 形成链表结构
-    if (i === 0) {
-      workInProgressFiber.child = newFiber;
-    } else {
-      // i>0
-      previousNewFiber.sibling = newFiber;
-    }
-    previousNewFiber = newFiber;
-  }
-}
-
 //原生标签节点处理
-function updateHostComponent(fiber) {
-  if (!fiber) {
-    return;
-  }
-  if (!fiber.stateNode) {
-    fiber.stateNode = createNode(fiber);
+function updateHostComponent(workInProgress) {
+  if (!workInProgress.stateNode) {
+    workInProgress.stateNode = createNode(workInProgress);
   }
 
-  // todo reconcileChildren
-  if (fiber.props) {
-    const {children} = fiber.props;
-    reconcileChildren(fiber, children);
-  }
-  console.log("fiiber", fiber); //sy-log
+  reconcileChildren(workInProgress, workInProgress.props.children);
+
+  console.log("workInProgress", workInProgress); //sy-log
 }
 
 // 函数组件
 // 执行函数
-function updateFunctionComponent(fiber) {
-  const {type, props} = fiber;
+function updateFunctionComponent(workInProgress) {
+  const {type, props} = workInProgress;
+
   const children = type(props);
 
-  reconcileChildren(fiber, children);
+  reconcileChildren(workInProgress, children);
 }
 
 // 类组件
 // 先实例化 再执行render函数
-function updateClassComponent(fiber) {
-  const {type, props} = fiber;
+function updateClassComponent(vnode) {
+  const {type, props} = vnode;
   const instance = new type(props);
-  const children = instance.render();
-  reconcileChildren(fiber, children);
+  const vvnode = instance.render();
+  const node = createNode(vvnode);
+  return node;
 }
 
 // 更新属性
+// todo 加一下属性的具体处理 比如style
 function updateNode(node, nextVal) {
   Object.keys(nextVal).forEach(k => {
     if (k === "children") {
@@ -115,27 +73,66 @@ function updateNode(node, nextVal) {
   });
 }
 
-function performUnitOfWork(fiber) {
-  // 1. 执行当前任务
-  // 执行当前任务
-  const {type} = fiber;
+function reconcileChildren(workInProgress, children) {
+  if (
+    !(workInProgress.props && typeof workInProgress.props.children !== "string")
+  ) {
+    return;
+  }
+
+  let newChildren = Array.isArray(children) ? children : [children];
+
+  let previousNewFiber = null;
+  for (let index = 0; index < newChildren.length; index++) {
+    const child = newChildren[index];
+
+    let newFiber = null;
+    newFiber = {
+      type: child.type, //
+      props: child.props,
+      child: null,
+      sibling: null,
+      return: workInProgress,
+      stateNode: null
+    };
+
+    // 构建fiber结构
+    if (index === 0) {
+      workInProgress.child = newFiber;
+    } else {
+      previousNewFiber.sibling = newFiber;
+    }
+
+    previousNewFiber = newFiber;
+  }
+}
+
+// fiber 结构
+// child 第一个子节点
+// sibling 下一个兄弟
+// return  爸爸
+// stateNode dom节点
+function performUnitOfWork(workInProgress) {
+  // * step1: 执行当前fiber （治理王朝）
+  // todo 执行
+  const {type} = workInProgress;
   if (typeof type === "function") {
     type.prototype.isReactComponent
-      ? updateClassComponent(fiber)
-      : updateFunctionComponent(fiber);
+      ? updateClassComponent(workInProgress)
+      : updateFunctionComponent(workInProgress);
   } else {
     // 原生标签
-    updateHostComponent(fiber);
+    updateHostComponent(workInProgress);
   }
 
-  // 2、 返回下一个任务
-  // 原则就是：先找子元素
-  if (fiber.child) {
-    return fiber.child;
+  // * step2: 返回下一个fiber (王朝的故事)
+  // 原则： 先找子节点
+  if (workInProgress.child) {
+    return workInProgress.child;
   }
-
-  // 如果没有子元素 寻找兄弟元素
-  let nextFiber = fiber;
+  // 没有子节点，传给兄弟,
+  // 没有兄弟，
+  let nextFiber = workInProgress;
   while (nextFiber) {
     if (nextFiber.sibling) {
       return nextFiber.sibling;
@@ -144,48 +141,50 @@ function performUnitOfWork(fiber) {
   }
 }
 
+// 下一个fiber任务
 let nextUnitOfWork = null;
+// wip  work in progress 正在进行当中的 ，数据结构fiber root
 let wipRoot = null;
 
-function workLoop(deadline) {
-  // 有下一个任务，并且当前帧还没有结束
-  while (nextUnitOfWork && deadline.timeRemaining() > 1) {
+function workLoop(IdleDeadline) {
+  while (nextUnitOfWork && IdleDeadline.timeRemaining() > 1) {
+    //  执行当前fiber， 返回下一个fiber
     nextUnitOfWork = performUnitOfWork(nextUnitOfWork);
   }
 
   if (!nextUnitOfWork && wipRoot) {
+    // commit
     commitRoot();
   }
-
-  requestIdleCallback(workLoop);
 }
 
 requestIdleCallback(workLoop);
 
-// ! commit阶段
 function commitRoot() {
-  commitWorker(wipRoot.child);
+  commotWorker(wipRoot.child);
   wipRoot = null;
 }
 
-function commitWorker(fiber) {
-  if (!fiber) {
+function commotWorker(workInProgress) {
+  if (!workInProgress) {
     return;
   }
-
-  // 向上查找
-  let parentNodeFiber = fiber.return;
+  // step1: commit workInProgress
+  let parentNodeFiber = workInProgress.return;
   while (!parentNodeFiber.stateNode) {
     parentNodeFiber = parentNodeFiber.return;
   }
 
+  // 父（祖先）dom节点
   const parentNode = parentNodeFiber.stateNode;
-  if (fiber.effectTag === PLACEMENT && fiber.stateNode !== null) {
-    parentNode.appendChild(fiber.stateNode);
+  if (workInProgress.stateNode) {
+    parentNode.appendChild(workInProgress.stateNode);
   }
 
-  commitWorker(fiber.child);
-  commitWorker(fiber.sibling);
+  // step2: commit workInProgress.child
+  commotWorker(workInProgress.child);
+  // step1: commit workInProgress.sibling
+  commotWorker(workInProgress.sibling);
 }
 
 export default {render};
