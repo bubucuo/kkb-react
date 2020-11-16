@@ -3,7 +3,7 @@
 
 // container  node是node节点
 function render(vnode, container) {
-  console.log("vnode", vnode, container); //sy-log
+  // console.log("vnode", vnode, container); 
 
   // step1 : vnode->node
   const node = createNode(vnode);
@@ -14,7 +14,6 @@ function render(vnode, container) {
 function createNode(vnode) {
   let node = null;
   // todo vnode->node
-
   const {type} = vnode;
   if (typeof type === "string") {
     // 原生标签
@@ -24,16 +23,22 @@ function createNode(vnode) {
     node = type.prototype.isReactComponent
       ? updateClassComponent(vnode)
       : updateFunctionComponent(vnode);
+  } else {
+    // 暗号：樱桃 zhidl
+    // typeof type === 'symbol' && Symbol.keyFor(type) === 'react.fragment'
+    node = updateHostComponent(vnode);
   }
-
   return node;
 }
-
 //原生标签节点处理
 function updateHostComponent(vnode) {
   const {type, props} = vnode;
-  let node = document.createElement(type);
-
+  let node = null;
+  if(typeof type === 'string'){
+    node = document.createElement(type);
+  } else {
+    node = document.createDocumentFragment();
+  }
   if (typeof props.children === "string") {
     let childText = document.createTextNode(props.children);
     node.appendChild(childText);
@@ -44,7 +49,7 @@ function updateHostComponent(vnode) {
   updateNode(node, props);
   return node;
 }
-
+ 
 // 函数组件
 // 执行函数
 function updateFunctionComponent(vnode) {
