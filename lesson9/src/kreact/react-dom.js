@@ -50,12 +50,11 @@ function updateFunctionComponent(workInProgress) {
 
 // 类组件
 // 先实例化 再执行render函数
-function updateClassComponent(vnode) {
-  const {type, props} = vnode;
+function updateClassComponent(workInProgress) {
+  const {type, props} = workInProgress;
   const instance = new type(props);
-  const vvnode = instance.render();
-  const node = createNode(vvnode);
-  return node;
+  const children = instance.render();
+  reconcileChildren(workInProgress, children);
 }
 
 // 更新属性
