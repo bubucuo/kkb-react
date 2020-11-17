@@ -5,8 +5,7 @@ function createElement(type, config, ...children) {
     delete config.__self;
     delete config.__source;
   }
-  // ! 今天先不考虑key和ref
-
+  // key 、ref 先不考虑
   const props = {
     ...config,
     children: children.map(child =>
@@ -20,14 +19,10 @@ function createElement(type, config, ...children) {
   };
 }
 
-// 把文本节点变成对象的形式，方便统一简洁处理，源码当中没这样
 function createTextNode(text) {
   return {
     type: TEXT,
-    props: {
-      children: [],
-      nodeValue: text
-    }
+    props: {children: [], nodeValue: text}
   };
 }
 
