@@ -24,9 +24,7 @@ function createNode(vnode) {
       ? updateClassComponent(vnode)
       : updateFunctionComponent(vnode);
   } else {
-    // 暗号：樱桃 zhidl
-    // typeof type === 'symbol' && Symbol.keyFor(type) === 'react.fragment'
-    node = updateHostComponent(vnode);
+    node = createFragmentComponent(vnode);
   }
   return node;
 }
@@ -49,7 +47,14 @@ function updateHostComponent(vnode) {
   updateNode(node, props);
   return node;
 }
- 
+
+// 处理Fragment节点
+function createFragmentComponent(vnode) {
+  const node = document.createDocumentFragment();
+  reconcileChildren(vnode.props.children, node);
+  return node;
+}
+
 // 函数组件
 // 执行函数
 function updateFunctionComponent(vnode) {
