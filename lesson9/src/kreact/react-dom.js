@@ -34,13 +34,15 @@ function updateHostComponent(workInProgress) {
   }
 
   reconcileChildren(workInProgress, workInProgress.props.children);
-
-  console.log("workInProgress", workInProgress); //sy-log
 }
 
 // 函数组件
 // 执行函数
 function updateFunctionComponent(workInProgress) {
+  wipFiber = workInProgress;
+  wipFiber.hooks = [];
+  wipFiber.hookIndex = 0;
+
   const {type, props} = workInProgress;
 
   const children = type(props);
@@ -67,7 +69,14 @@ function updateNode(node, nextVal) {
         node.appendChild(textNode);
       }
     } else {
-      node[k] = nextVal[k];
+      // 源码当中事件是合成事件，利用了事件委托，react17之前是把事件添加到document上，react17是添加到了container
+      // 但是今天不写这么复杂了，这里瞎写一下事件
+      if (k.slice(0, 2) === "on") {
+        let eventName = k.slice(2).toLowerCase();
+        node.addEventListener(eventName, nextVal[k]);
+      } else {
+        node[k] = nextVal[k];
+      }
     }
   });
 }
@@ -111,6 +120,7 @@ function reconcileChildren(workInProgress, children) {
 // sibling 下一个兄弟
 // return  爸爸
 // stateNode dom节点
+// base 上一次的fiber
 function performUnitOfWork(workInProgress) {
   // * step1: 执行当前fiber （治理王朝）
   // todo 执行
@@ -160,11 +170,11 @@ function workLoop(IdleDeadline) {
 requestIdleCallback(workLoop);
 
 function commitRoot() {
-  commotWorker(wipRoot.child);
+  commitWorker(wipRoot.child);
   wipRoot = null;
 }
 
-function commotWorker(workInProgress) {
+function commitWorker(workInProgress) {
   if (!workInProgress) {
     return;
   }
@@ -181,9 +191,38 @@ function commotWorker(workInProgress) {
   }
 
   // step2: commit workInProgress.child
-  commotWorker(workInProgress.child);
+  commitWorker(workInProgress.child);
   // step1: commit workInProgress.sibling
-  commotWorker(workInProgress.sibling);
+  commitWorker(workInProgress.sibling);
+}
+// 当前正在工作的fiber
+let wipFiber = null;
+// hooks :{
+// state 存储状态
+// queue
+// }
+
+// [hook1, hook2, hook3]
+export function useState(init) {
+  const oldHook = wipFiber.base && wipFiber.base.hooks[wipFiber.hookIndex];
+  const hook = oldHook
+    ? {
+        state: oldHook.state,
+        queue: oldHook.queue
+      }
+    : {state: init, queue: []};
+
+  hook.queue.forEach(action => {
+    // 源码中是批量更新
+    // 模拟一下
+    hook.state = action;
+  });
+
+  const setState = () => {};
+
+  // todo 别忘了改init
+
+  return [hook.state, setState];
 }
 
 export default {render};
