@@ -4,14 +4,32 @@ import store from "../store/";
 export default class ReduxPage extends Component {
   componentDidMount() {
     // store发生变化之后，执行subscribe的监听函数
-    store.subscribe(() => {
+    this.unsubscribe = store.subscribe(() => {
       this.forceUpdate();
     });
+  }
+
+  componentWillUnmount() {
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
   }
 
   add = () => {
     // 修改状态
     store.dispatch({type: "ADD"});
+  };
+
+  asyAdd = () => {
+    // setTimeout(() => {
+    //   store.dispatch({type: "ADD"});
+    // }, 1000);
+
+    store.dispatch((dispatch, getState) => {
+      setTimeout(() => {
+        dispatch({type: "ADD"});
+      }, 1000);
+    });
   };
 
   render() {
@@ -20,6 +38,7 @@ export default class ReduxPage extends Component {
         <h3>ReduxPage</h3>
         <p>{store.getState()}</p>
         <button onClick={this.add}>add</button>
+        <button onClick={this.asyAdd}>asyAdd</button>
       </div>
     );
   }
