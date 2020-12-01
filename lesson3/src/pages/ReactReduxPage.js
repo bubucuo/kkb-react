@@ -9,24 +9,24 @@ import {bindActionCreators, connect} from "../kReactRedux";
   // mapStateToProps 把state map（映射） props上一份
   ({count}) => ({count}),
   // mapDispatchToProps  object |  function
-  // {
-  //   add: () => ({type: "ADD"}),
-  //   minus: () => ({type: "MINUS"})
-  // }
-
-  dispatch => {
-    let creators = {
-      add: () => ({type: "ADD"}),
-      minus: () => ({type: "MINUS"})
-    };
-
-    creators = bindActionCreators(creators, dispatch);
-
-    return {
-      dispatch,
-      ...creators
-    };
+  {
+    add: () => ({type: "ADD"}),
+    minus: () => ({type: "MINUS"})
   }
+
+  // dispatch => {
+  //   let creators = {
+  //     add: () => ({type: "ADD"}),
+  //     minus: () => ({type: "MINUS"})
+  //   };
+
+  //   creators = bindActionCreators(creators, dispatch);
+
+  //   return {
+  //     dispatch,
+  //     ...creators
+  //   };
+  // }
 )
 class ReactReduxPage extends Component {
   render() {
