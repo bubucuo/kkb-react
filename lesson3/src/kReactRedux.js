@@ -1,4 +1,5 @@
 import React from "react";
+import {Button} from "antd";
 // 使用context
 // * step1: 先创建Context对象
 const Context = React.createContext();
@@ -62,6 +63,15 @@ export function bindActionCreators(creators, dispatch) {
   return obj;
 }
 
+// * 自定义hook
+function useForceUpdate() {
+  const [state, setState] = React.useState(0);
+  const update = React.useCallback(() => {
+    setState(prev => prev + 1);
+  }, []);
+  return update;
+}
+
 // ! hook
 function useStore() {
   const store = React.useContext(Context);
@@ -73,7 +83,9 @@ export function useSelector(selector) {
 
   const {getState} = store;
 
-  const [, forceUpdate] = React.useReducer(x => x + 1, 0);
+  // const [, forceUpdate] = React.useReducer(x => x + 1, 0);
+
+  const forceUpdate = useForceUpdate();
 
   React.useLayoutEffect(() => {
     // * 亲 这里是订阅 （state一旦改变，则执行订阅函数，比如这里就是更新组件）
