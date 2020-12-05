@@ -5,6 +5,26 @@ import LoginPage from "../pages/LoginPage";
 import _404Page from "../pages/_404Page";
 import PrivateRoute from "./PrivateRoute";
 
+export const routes = [
+  {
+    path: "/",
+    exact: true,
+    component: HomePage
+  },
+  {
+    path: "/user",
+    component: UserPage,
+    auth: PrivateRoute
+  },
+  {
+    path: "/login",
+    component: LoginPage
+  },
+  {
+    component: _404Page
+  }
+];
+
 export default function Routes(props) {
   return (
     <Router>
@@ -13,10 +33,10 @@ export default function Routes(props) {
       <Link to="/login">登录</Link>
 
       <Switch>
-        <Route exact path="/" component={HomePage} />
+        {/* <Route exact path="/" component={HomePage} />
         <Route path="/login" component={LoginPage} />
         <PrivateRoute path="/user" component={UserPage} />
-        <Route component={_404Page} />
+        <Route component={_404Page} /> */}
       </Switch>
     </Router>
   );

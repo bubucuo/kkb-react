@@ -6,7 +6,9 @@ import {login} from "../action/user";
 @connect(
   // mapStateToProps
   ({user}) => ({
-    isLogin: user.isLogin
+    isLogin: user.isLogin,
+    loading: user.loading,
+    err: user.err
   }),
   // mapDispatchToProps function | object
   {
@@ -22,7 +24,7 @@ class LoginPage extends Component {
     this.setState({username: e.target.value});
   };
   render() {
-    const {isLogin, location, dispatch, login} = this.props;
+    const {isLogin, location, dispatch, login, loading, err} = this.props;
 
     // 登录了， 就跳转走，去from或者你自己默认的页面
     if (isLogin) {
@@ -37,7 +39,10 @@ class LoginPage extends Component {
         <h3>LoginPage</h3>
         <input value={username} onChange={this.nameChange} />
 
-        <button onClick={() => login({name: username})}>login</button>
+        <button onClick={() => login({name: username})}>
+          {loading ? "loading..." : "login"}
+        </button>
+        <p className="red">{err.msg}</p>
       </div>
     );
   }
