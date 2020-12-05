@@ -1,15 +1,22 @@
 import ReactDOM from "react-dom";
 import App from "./App";
 import "./index.css";
+import {Provider} from "react-redux";
+import store from "./store/";
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById("root")
+);
 
-//yield只能用在generator函数里
-//
+// function 与函数名之间有个*
+// generator函数体内部使用yield表达式，定义不同状态
 // function* helloWorldGenerator() {
 //   yield "hello";
 //   yield "world";
-//   return "ending";
+//   // return "ending";
 // }
 
 // var hw = helloWorldGenerator();
@@ -20,7 +27,7 @@ ReactDOM.render(<App />, document.getElementById("root"));
 // console.log(hw.next());
 // console.log(hw.next());
 
-// let a = 0;
+// var a = 0;
 // function* fun() {
 //   let aa = yield (a = 1 + 1);
 //   return aa;
@@ -30,6 +37,7 @@ ReactDOM.render(<App />, document.getElementById("root"));
 // let b = fun();
 // console.log("fun0-2", a);
 
-// console.log("fun0-3", b.next()); //注释下这句试试，比较下前后a的值
-// console.log("fun0-4", b.next()); //注释下这句试试，比较下前后a的值
+// console.log("fun", b.next()); //注释下这句试试，比较下前后a的值
+// console.log("fun-----", b.next()); //注释下这句试试，比较下前后a的值
+
 // console.log("fun1", a);
