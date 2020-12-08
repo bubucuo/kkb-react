@@ -6,6 +6,7 @@ import { getProductData } from "../services/product";
 export default {
   namespace: "example",
 
+  // 子state
   state: {
     data: [],
     pageSize: 10,
@@ -16,6 +17,7 @@ export default {
   subscriptions: {
     setup({ dispatch, history }) {
       // eslint-disable-line
+      console.log("example subscriptions "); //sy-log
     }
   },
 

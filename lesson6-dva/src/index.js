@@ -4,7 +4,7 @@ import "./index.css";
 // 1. Initialize
 const createHistory = require("history").createBrowserHistory;
 
-const app = dva({
+export const app = dva({
   history: createHistory()
 });
 
@@ -13,6 +13,7 @@ const app = dva({
 
 // 3. Model
 app.model(require("./models/example").default);
+// app.model(require("./models/user").default);
 
 // 4. Router
 app.router(require("./router").default);

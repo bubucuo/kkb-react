@@ -23,7 +23,7 @@ const columns = [
 // @connect(({ example }) => ({ example }), {
 @connect(
   state => {
-    return { example: state.example };
+    return { example: state.example, user: state.user };
   },
   {
     getProductData: payload => ({ type: "example/getProductData", payload })
@@ -35,6 +35,7 @@ class ExamplePage extends Component {
     this.props.getProductData();
   };
   render() {
+    console.log("example props", this.props); //sy-log
     const { data } = this.props.example;
     return (
       <div>
