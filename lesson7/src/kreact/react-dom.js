@@ -24,6 +24,12 @@ function createNode(vnode) {
     node = updateHostComponent(vnode);
   } else if (isStringOrNumber(vnode)) {
     node = updateTextComponent(vnode + "");
+  } else if (typeof type === "function") {
+    node = type.prototype.isReactComponent
+      ? updateClassComponent(vnode)
+      : updateFunctionComponent(vnode);
+  } else {
+    node = updateFragmentComponent(vnode);
   }
   return node;
 }
@@ -38,6 +44,7 @@ function updateHostComponent(vnode) {
 
   return node;
 }
+
 // 更新原生标签的属性，如className、href、id、（style、事件）等
 function updateNode(node, nextVal) {
   Object.keys(nextVal)
@@ -45,10 +52,39 @@ function updateNode(node, nextVal) {
     .forEach(k => (node[k] = nextVal[k]));
 }
 
+// 函数组件 执行函数
+// 返回node
+function updateFunctionComponent(vnode) {
+  const {type, props} = vnode;
+  const child = type(props);
+  //  child->node
+  const node = createNode(child);
+  return node;
+}
+
+// 类组件
+// 先实例化 再执行render函数
+function updateClassComponent(vnode) {
+  const {type, props} = vnode;
+
+  const instance = new type(props);
+  const child = instance.render();
+
+  //  child->node
+  const node = createNode(child);
+  return node;
+}
+
 // 文本节点
 function updateTextComponent(vnode) {
   const node = document.createTextNode(vnode);
   return node;
+}
+
+// 实现Fragment
+function updateFragmentComponent(vnode) {
+  // todo 作业
+  // 提示：可以使用document的fragment
 }
 
 // 遍历子节点，假的协调
