@@ -2,8 +2,6 @@
 // node  真实dom节点
 
 function render(vnode, container) {
-  console.log("vnode", vnode); //sy-log
-
   // step1 : vnode->node
   const node = createNode(vnode);
   // 把node更新到container中
