@@ -1,14 +1,10 @@
 // vnode 虚拟dom节点
 // node  真实dom节点
 
+// fiber root,wip work in progress
 let wipRoot = null; // fiber | null
 
 function render(vnode, container) {
-  // // step1 : vnode->node
-  // const node = createNode(vnode);
-  // // 把node更新到container中
-  // container.appendChild(node);
-
   wipRoot = {
     type: "div",
     props: {children: {...vnode}},
@@ -47,7 +43,7 @@ function updateNode(node, nextVal) {
       if (k === "children") {
         // 有可能是文本
         if (isStringOrNumber(nextVal[k])) {
-          node.textContext = nextVal[k] + "";
+          node.textContent = nextVal[k] + "";
         }
       } else {
         node[k] = nextVal[k];
@@ -56,13 +52,11 @@ function updateNode(node, nextVal) {
 }
 
 // 函数组件 执行函数
-// 返回node
-function updateFunctionComponent(vnode) {
-  const {type, props} = vnode;
+// 协调子节点
+function updateFunctionComponent(workInProgress) {
+  const {type, props} = workInProgress;
   const child = type(props);
-  //  child->node
-  const node = createNode(child);
-  return node;
+  reconcileChildren(workInProgress, child);
 }
 
 // 类组件
@@ -85,13 +79,8 @@ function updateTextComponent(vnode) {
 }
 
 // 实现Fragment
-function updateFragmentComponent(vnode) {
-  // todo 作业
-  // 提示：可以使用document的fragment
-
-  const node = document.createDocumentFragment();
-  reconcileChildren(node, vnode.props.children);
-  return node;
+function updateFragmentComponent(workInProgress) {
+  reconcileChildren(workInProgress, workInProgress.props.children);
 }
 
 // 遍历子节点
@@ -113,7 +102,7 @@ function reconcileChildren(workInProgress, children) {
       child: null, //fiber | nunll
       sibling: null, // fiber | null
       return: workInProgress, //fiber
-      stateNode: null
+      stateNode: null // 如果是原生标签，这里dom节点
     };
 
     if (i === 0) {
@@ -142,7 +131,7 @@ let nextUnitOfWork = null;
 // work in progress 正在工作中的fiber任务
 
 function performUnitOfWork(workInProgress) {
-  // step1: 更新fiber任务
+  // * step1: 更新fiber任务
   // todo
   // 根据fiber任务类型不同进行更新
   const {type} = workInProgress;
@@ -150,14 +139,20 @@ function performUnitOfWork(workInProgress) {
   if (typeof type === "string") {
     // 原生标签节点
     updateHostComponent(workInProgress);
+  } else if (typeof type === "function") {
+    type.prototype.isReactComponent
+      ? updateClassComponent(workInProgress)
+      : updateFunctionComponent(workInProgress);
+  } else {
+    updateFragmentComponent(workInProgress);
   }
 
-  // step2: 返回下一个要更新的fiber任务，顺序参考王朝的故事
-  //规则： 先子节点，
+  // * step2: 返回下一个要更新的fiber任务，顺序参考王朝的故事
+  // ! 规则： 先子节点，
   if (workInProgress.child) {
     return workInProgress.child;
   }
-  // 再兄弟节点或者叔叔节点或者爷爷弟弟节点等等
+  // ! 规则： 再兄弟节点或者叔叔节点或者爷爷弟弟节点等等
   let nextFiber = workInProgress;
   while (nextFiber) {
     if (nextFiber.sibling) {
@@ -176,12 +171,47 @@ function workLoop(IdleDeadline) {
   }
 
   requestIdleCallback(workLoop);
-
-  // if (!nextUnitOfWork) {
-  //   // 可以提交任务，更新去了 就是可以同步虚拟dom节点到dom节点了
-  // }
+  // 任务更新完啦，
+  // todo 把fiber节点更新到dom当中
+  if (!nextUnitOfWork && wipRoot) {
+    // 可以提交任务，更新去了 就是可以同步虚拟dom节点到dom节点了
+    commitRoot();
+  }
 }
 
 requestIdleCallback(workLoop);
+
+// 提交
+function commitRoot() {
+  commitWorker(wipRoot.child);
+  wipRoot = null;
+}
+
+function commitWorker(workInProgress) {
+  if (!workInProgress) {
+    return;
+  }
+
+  // step1 : 提交自己
+  // 父dom节点的fiber
+  let parentNodeFiber = workInProgress.return;
+  // ? 一个fiber节点一定有dom节点吗，比如Fragment、Provider、Consumer等
+  while (!parentNodeFiber.stateNode) {
+    parentNodeFiber = parentNodeFiber.return;
+  }
+  // parentNode是父dom节点
+  let parentNode = parentNodeFiber.stateNode;
+
+  // 新增插入
+  if (workInProgress.stateNode) {
+    // 插入
+    parentNode.appendChild(workInProgress.stateNode);
+  }
+
+  // step2 : 提交子节点
+  commitWorker(workInProgress.child);
+  // step3 : 提交兄弟
+  commitWorker(workInProgress.sibling);
+}
 
 export default {render};

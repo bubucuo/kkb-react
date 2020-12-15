@@ -43,12 +43,12 @@ const jsx = (
   <div className="border">
     <h1>全栈</h1>
     <a href="https://www.kaikeba.com/">kkb</a>
-    {/* <FunctionComponent name="函数组件" /> */}
-    {/* <ClassCoomponent name="类组件" /> */}
-    {/* <>
+    <FunctionComponent name="函数组件" />
+    <ClassCoomponent name="类组件" />
+    <>
       <li>omg</li>
       <li>omg2</li>
-    </> */}
+    </>
     {/* <ul>
       <FragmentComponent />
     </ul> */}
@@ -62,4 +62,5 @@ ReactDOM.render(jsx, document.getElementById("root"));
 // 原生标签节点
 // 文本节点
 // 函数组件
-// 类组件
+// todo 类组件  （作业）
+// Fragment
