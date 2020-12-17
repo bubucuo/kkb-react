@@ -24,6 +24,8 @@ function FunctionComponent(props) {
         }}>
         {count}
       </button>
+
+      {count % 2 ? <h1>111</h1> : <h2>222</h2>}
       <p>{props.name}</p>
     </div>
   );
