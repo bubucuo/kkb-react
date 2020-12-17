@@ -1,8 +1,11 @@
+import {Placement, Update, Deletion} from "./const";
+
 // vnode 虚拟dom节点
 // node  真实dom节点
 
 // fiber root,wip work in progress
 let wipRoot = null; // fiber | null
+let currentRoot = null;
 
 function render(vnode, container) {
   wipRoot = {
@@ -43,6 +46,10 @@ function updateNode(node, nextVal) {
         if (isStringOrNumber(nextVal[k])) {
           node.textContent = nextVal[k] + "";
         }
+      } else if (k.slice(0, 2) === "on") {
+        // 简单粗暴山寨一下，源码当中会通过映射表检验是否是有效合成事件
+        let eventName = k.slice(2).toLocaleLowerCase();
+        node.addEventListener(eventName, nextVal[k]);
       } else {
         node[k] = nextVal[k];
       }
@@ -81,19 +88,46 @@ function reconcileChildren(workInProgress, children) {
 
   // 记录上一个fiber
   let previousNewFiber = null;
+  // 老的fiber的第一个子节点
+  let oldFiber = workInProgress.alternate && workInProgress.alternate.child;
   for (let i = 0; i < newChildren.length; i++) {
     let child = newChildren[i];
-    // 构建fiber结构
-    let newFiber = {
-      type: child.type,
-      props: {...child.props},
-      child: null, //fiber | nunll
-      sibling: null, // fiber | null
-      return: workInProgress, //fiber
-      stateNode: null // 如果是原生标签，这里dom节点
-    };
+    let newFiber = null;
+    let same =
+      child &&
+      oldFiber &&
+      child.key === oldFiber.key &&
+      child.type === oldFiber.type;
+
+    if (same) {
+      // 复用
+    }
+    if (!same && child) {
+      // 新增
+      newFiber = {
+        key: child.key || null,
+        type: child.type,
+        props: {...child.props},
+        child: null, //fiber | nunll
+        sibling: null, // fiber | null
+        return: workInProgress, //fiber
+        stateNode: null, // 如果是原生标签，这里dom节点
+        alternate: null, // 上一次的fiber节点
+        flags: Placement
+      };
+    }
+    if (!same && oldFiber) {
+      // 删除
+    }
+
+    if (oldFiber) {
+      // 获取下一个oldFiber
+      oldFiber = oldFiber.sibling;
+    }
 
     if (i === 0) {
+      // 构建fiber结构
+
       // workInProgress的第一个子fiber
       workInProgress.child = newFiber;
     } else {
@@ -172,6 +206,7 @@ requestIdleCallback(workLoop);
 // 提交
 function commitRoot() {
   commitWorker(wipRoot.child);
+  currentRoot = wipRoot;
   wipRoot = null;
 }
 
@@ -191,15 +226,28 @@ function commitWorker(workInProgress) {
   let parentNode = parentNodeFiber.stateNode;
 
   // 新增插入
-  if (workInProgress.stateNode) {
+  if (workInProgress.flags & Placement && workInProgress.stateNode) {
     // 插入
     parentNode.appendChild(workInProgress.stateNode);
+  } else if (workInProgress.flags & Update && workInProgress.stateNode) {
+    // todo 更新
+  } else if (workInProgress.flags & Deletion && workInProgress.stateNode) {
+    // todo 删除
   }
 
   // step2 : 提交子节点
   commitWorker(workInProgress.child);
   // step3 : 提交兄弟
   commitWorker(workInProgress.sibling);
+}
+
+// hook API
+export function useState(init) {
+  const state = init;
+  const setState = action => {
+    console.log("action", action); //sy-log
+  };
+  return [state, setState];
 }
 
 export default {render};
