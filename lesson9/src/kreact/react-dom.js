@@ -66,12 +66,6 @@ function updateClassComponent(workInProgress) {
   reconcileChildren(workInProgress, child);
 }
 
-// 文本节点
-function updateTextComponent(vnode) {
-  const node = document.createTextNode(vnode);
-  return node;
-}
-
 // 实现Fragment
 function updateFragmentComponent(workInProgress) {
   reconcileChildren(workInProgress, workInProgress.props.children);
