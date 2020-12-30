@@ -11,3 +11,5 @@ ReactDOM.render(
   </Provider>,
   document.getElementById("root")
 );
+
+// react-redux 是一个react与redux的绑定库，背后原理就是Context
