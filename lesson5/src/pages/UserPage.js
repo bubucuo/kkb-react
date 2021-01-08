@@ -1,7 +1,10 @@
 import React, {Component} from "react";
+import {connect} from "react-redux";
 
-export default class UserPage extends Component {
+@connect(({user}) => ({user}))
+class UserPage extends Component {
   render() {
+    console.log("UserPage props", this.props); //sy-log
     return (
       <div>
         <h3>UserPage</h3>
@@ -9,3 +12,5 @@ export default class UserPage extends Component {
     );
   }
 }
+
+export default UserPage;
