@@ -1,12 +1,14 @@
 import React, {Component} from "react";
 import {Redirect} from "react-router-dom";
 import {connect} from "react-redux";
+import {login} from "../action/user";
 
 @connect(
-  ({user}) => ({isLogin: user.isLogin}),
+  ({user}) => ({isLogin: user.isLogin, err: user.err}),
   // mapdispatchToProps
   {
-    login: (userInfo) => ({type: "LOGIN_SUCCESS", payload: userInfo}),
+    login,
+    // : (userInfo) => ({type: "LOGIN_SUCCESS", payload: userInfo}),
   }
 )
 class LoginPage extends Component {
@@ -17,7 +19,7 @@ class LoginPage extends Component {
     };
   }
   render() {
-    const {isLogin, location, dispatch, login} = this.props;
+    const {isLogin, location, dispatch, login, err} = this.props;
     const {from = "/"} = location.state || {};
 
     // 已经登录了
@@ -35,6 +37,7 @@ class LoginPage extends Component {
           value={name}
           onChange={(e) => this.setState({name: e.target.value})}
         />
+        <p className="red">{err.msg}</p>
         <button onClick={() => login({name})}>login</button>
       </div>
     );

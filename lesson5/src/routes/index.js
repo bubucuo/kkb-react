@@ -14,6 +14,7 @@ export const routes = [
   {
     path: "/user",
     component: UserPage,
+    auth: PrivateRoute,
   },
   {
     path: "/login",
@@ -32,11 +33,11 @@ export default function Routes(props) {
       <Link to="/login">登录</Link>
 
       <Switch>
-        <Route exact path="/" component={HomePage} />
+        {/* <Route exact path="/" component={HomePage} />
         <Route path="/login" component={LoginPage} />
-        {/* <Route path="/user" component={UserPage} /> */}
+        <Route path="/user" component={UserPage} />
         <PrivateRoute path="/user" component={UserPage} />
-        <Route component={_404Page} />
+        <Route component={_404Page} /> */}
       </Switch>
     </Router>
   );
