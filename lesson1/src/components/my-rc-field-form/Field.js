@@ -3,6 +3,23 @@ import FieldContext from "./FieldContext";
 
 export default class Field extends Component {
   static contextType = FieldContext;
+
+  componentDidMount() {
+    // 注册 和 取消注册要成对出现
+    // 订阅
+    this.unRegister = this.context.setFieldEntities(this);
+  }
+
+  componentWillUnmount() {
+    if (this.unRegister) {
+      this.unRegister();
+    }
+  }
+
+  onStoreChange = () => {
+    this.forceUpdate();
+  };
+
   getControlled = () => {
     const {name} = this.props;
     const {setFieldsValue, getFieldValue} = this.context;
@@ -11,8 +28,9 @@ export default class Field extends Component {
       onChange: (e) => {
         // set
         const newValue = e.target.value;
-        console.log("newValue", newValue); //sy-log
+        // console.log("newValue", newValue); //sy-log
         setFieldsValue({[name]: newValue});
+        // this.forceupdate()
       },
     };
   };
@@ -22,3 +40,5 @@ export default class Field extends Component {
     return returnChildNode;
   }
 }
+
+/* <Component {...props} {...newProps} />; */
