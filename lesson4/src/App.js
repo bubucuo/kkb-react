@@ -1,29 +1,30 @@
+import React, {Component} from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Switch,
+  Redirect,
+  useHistory,
+  useLocation,
+  useRouteMatch,
+  useParams,
+  withRouter,
+  Prompt,
+} from "react-router-dom";
+
 // import {
 //   BrowserRouter as Router,
 //   Route,
 //   Link,
 //   Switch,
-//   Redirect,
 //   useHistory,
 //   useLocation,
 //   useRouteMatch,
 //   useParams,
 //   withRouter,
-//   Prompt,
-// } from "react-router-dom";
-
-import {
-  BrowserRouter as Router,
-  Route,
-  Link,
-  // Switch,
-  // useHistory,
-  // useLocation,
-  // useRouteMatch,
-  // useParams,
-  // withRouter,
-  // Redirect
-} from "./k-react-router-dom/";
+//   // Redirect
+// } from "./k-react-router-dom/";
 
 import HomePage from "./pages/HomePage";
 import UserPage from "./pages/UserPage";
@@ -44,22 +45,22 @@ function App() {
           <Link to="/product/123">商品</Link>
 
           {/* 独占路由 */}
-          {/* <Switch> */}
-          <Route
-            path="/"
-            exact
-            //children={children}
-            component={HomePage}
-            // ! 避免下面的行为
-            // component={() => <HomePage />}
-            render={render}>
-            {/* omg */}
-          </Route>
-          <Route path="/user" component={UserPage} />
-          <Route path="/login" component={LoginPage} />
-          {/* <Route path="/product/:id" component={Product} /> */}
-          <Route component={_404Page} />
-          {/* </Switch> */}
+          <Switch>
+            <Route
+              path="/"
+              exact
+              // children={children}
+              component={HomePage}
+              // ! 避免下面的行为
+              // component={() => <HomePage />}
+              render={render}>
+              {/* omg */}
+            </Route>
+            <Route path="/user" component={UserPage} />
+            <Route path="/login" component={LoginPage} />
+            <Route path="/product/:id" render={() => <Product />} />
+            <Route component={_404Page} />
+          </Switch>
         </Router>
       )}
     </div>
@@ -68,7 +69,9 @@ function App() {
 
 export default App;
 
-function Product({match}) {
+function Product() {
+  const [confirm, setConfirm] = useState(true);
+  const match = useRouteMatch();
   console.log("match", match); //sy-log
   const {params, url} = match;
   const {id} = params;
@@ -77,11 +80,36 @@ function Product({match}) {
       <h1>Search-{id}</h1>
       <Link to={url + "/detail"}>详情</Link>
       <Route path={url + "/detail"} component={Detail} />
+
+      <Prompt
+        when={confirm}
+        // message="Are you sure you want to leave?"
+        message={(location) => {
+          return "Are you sure you want to leave-fun";
+        }}
+      />
     </div>
   );
 }
 
-function Detail({match}) {
+// @withRouter
+// class Product extends Component {
+//   render() {
+//     const {match} = this.props;
+//     const {params, url} = match;
+//     const {id} = params;
+//     return (
+//       <div>
+//         <h1>Search-{id}</h1>
+//         <Link to={url + "/detail"}>详情</Link>
+//         <Route path={url + "/detail"} component={Detail} />
+//       </div>
+//     );
+//   }
+// }
+
+function Detail(props) {
+  console.log("detail", props); //sy-log
   return (
     <div>
       <h1>detail</h1>

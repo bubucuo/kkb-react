@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import {Redirect} from "react-router-dom";
 
 class HomePage extends Component {
   componentDidMount() {
@@ -10,6 +11,9 @@ class HomePage extends Component {
   }
   render() {
     console.log("HomePage props", this.props); //sy-log
+
+    return <Redirect to="/welcome" />;
+
     return (
       <div>
         <h3>HomePage</h3>
