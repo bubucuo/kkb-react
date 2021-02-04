@@ -11,21 +11,21 @@ ReactDOM.render(
   document.getElementById("root")
 );
 
-// function 与函数名之间有个*
-// generator函数体内部使用yield表达式，定义不同状态
+// // function与函数之间有个*
+// // yield 只能用在generator内部
 // function* helloWorldGenerator() {
+//   // return "ending-0";
 //   yield "hello";
 //   yield "world";
-//   // return "ending";
+//   return "ending";
 // }
 
-// var hw = helloWorldGenerator();
+// const hw = helloWorldGenerator();
 
-// //执行
-// console.log(hw.next());
-// console.log(hw.next());
-// console.log(hw.next());
-// console.log(hw.next());
+// console.log("hw", hw); //sy-log
+// console.log("hw-0", hw.next()); //sy-log
+// console.log("hw-1", hw.next()); //sy-log
+// console.log("hw-2", hw.next()); //sy-log
 
 // var a = 0;
 // function* fun() {
@@ -35,9 +35,5 @@ ReactDOM.render(
 
 // console.log("fun0", a);
 // let b = fun();
-// console.log("fun0-2", a);
-
 // console.log("fun", b.next()); //注释下这句试试，比较下前后a的值
-// console.log("fun-----", b.next()); //注释下这句试试，比较下前后a的值
-
 // console.log("fun1", a);

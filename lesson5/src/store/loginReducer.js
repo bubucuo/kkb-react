@@ -1,8 +1,8 @@
 const userInit = {
   isLogin: false,
   userInfo: {id: null, name: "", score: 0},
-  loading: false,
-  err: {msg: ""}
+  loading: false, // loading
+  err: {msg: ""},
 };
 
 // 定义用户基本信息修改规则
