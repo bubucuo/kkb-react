@@ -228,7 +228,6 @@ function workLoop(IdleDeadline) {
     // commit
     commitRoot();
   }
-
   requestIdleCallback(workLoop);
 }
 

@@ -1,5 +1,6 @@
 import { getProductData } from "../services/product";
 
+
 // {
 //  _namespace : {//具体的model}
 // }
@@ -15,6 +16,7 @@ export default {
 
   subscriptions: {
     setup({ dispatch, history }) {
+      
       // eslint-disable-line
       console.log("example subscriptions"); //sy-log
     }

@@ -20,7 +20,11 @@ const columns = [
   }
 ];
 
-@connect(({ example }) => ({ example }), {
+@connect((state) => {
+  // example
+  console.log(state, 'state');
+  return {example: state.example}
+}, {
   getProductData: payload => ({ type: "example/getProductData", payload })
 })
 class ExamplePage extends Component {

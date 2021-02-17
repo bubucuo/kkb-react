@@ -6,3 +6,5 @@ export const UserPageDynamic = dynamic({
   models: () => [import("../models/user")],
   component: () => import("../routes/UserPage")
 });
+
+// console.log(dynamic().setDefaultLoadingComponent());

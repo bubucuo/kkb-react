@@ -23,7 +23,7 @@ export default defineConfig({
     {
       path: '/product/:id',
       component: '@/pages/product/_layout',
-      routes: [{ path: '/product/:id', component: '@/pages/product/[id]' }],
+      routes: [{ path: '/product/abc/:id', component: '@/pages/product/[id]' }],
     },
   ],
 });

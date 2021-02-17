@@ -1,4 +1,4 @@
-// import React, {Component} from "react";
+import React from "react";
 // import ReactDOM from "react-dom";
 import ReactDOM from "./kreact/react-dom";
 import Component from "./kreact/Component";
