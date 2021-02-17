@@ -1,0 +1,8 @@
+.title {
+  background: rgb(121, 242, 179);
+}
+
+.border {
+  padding: 10px;
+  border: solid 1px red;
+}
