@@ -1,5 +1,7 @@
-import React, {Component} from "react";
-import ReactDOM from "react-dom";
+// import React, {Component} from "react";
+// import ReactDOM from "react-dom";
+import ReactDOM from "./kreact/react-dom";
+
 import "./index.css";
 
 const jsx = (
@@ -10,3 +12,7 @@ const jsx = (
 );
 
 ReactDOM.render(jsx, document.getElementById("root"));
+
+// console.log("React", React.version); //sy-log
+// 文本节点
+// 原生标签节点
