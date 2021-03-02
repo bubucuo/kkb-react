@@ -9,7 +9,7 @@ import "./index.css";
 function FunctionComponent(props) {
   return (
     <div className="border">
-      <p>{props.name}</p>
+      <p>函数数组{props.name}</p>
     </div>
   );
 }
@@ -38,17 +38,17 @@ const jsx = (
     <a href="https://www.kaikeba.com/" style={{color: "red"}}>
       kkb
     </a>
-    {/* <FunctionComponent name="function" /> */}
+    <FunctionComponent name="function" />
     {/* <ClassComponent name="class" /> */}
     {/* <ul>
       <li>asasa</li>
       <FragmentComponent />
     </ul> */}
 
-    {/* <>
+    <>
       <h1>哈哈</h1>
       <h1>呵呵</h1>
-    </> */}
+    </>
   </div>
 );
 

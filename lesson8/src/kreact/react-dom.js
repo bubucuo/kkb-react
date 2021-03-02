@@ -31,14 +31,20 @@ function createNode(workInProgress) {
 
 function updateNode(node, nextVal) {
   Object.keys(nextVal)
-    .filter((k) => k !== "children")
+    // .filter((k) => k !== "children")
     .forEach((k) => {
-      if (k === "style") {
-        for (let attr in nextVal.style) {
-          node.style[attr] = nextVal.style[attr];
+      if (k === "children") {
+        if (isString(nextVal.children)) {
+          node.textContent = nextVal.children;
         }
       } else {
-        node[k] = nextVal[k];
+        if (k === "style") {
+          for (let attr in nextVal.style) {
+            node.style[attr] = nextVal.style[attr];
+          }
+        } else {
+          node[k] = nextVal[k];
+        }
       }
     });
 }
@@ -57,16 +63,16 @@ function updateHostComponent(workInProgress) {
 }
 
 // 文本
-function updateTextCompoent(vnode) {
-  const node = document.createTextNode(vnode);
-  return node;
+function updateTextCompoent(workInProgress) {
+  if (!workInProgress.stateNode) {
+    workInProgress.stateNode = document.createTextNode(workInProgress.props);
+  }
 }
 
-function updateFunctionComponent(vnode) {
-  const {type, props} = vnode;
-  const vvnode = type(props);
-  const node = createNode(vvnode);
-  return node;
+function updateFunctionComponent(workInProgress) {
+  const {type, props} = workInProgress;
+  const children = type(props);
+  reconcileChildren(workInProgress, children);
 }
 
 function updateClassComponent(vnode) {
@@ -75,6 +81,10 @@ function updateClassComponent(vnode) {
   const vvnode = instance.render();
   const node = createNode(vvnode);
   return node;
+}
+
+function updateFragmentComponent(workInProgress) {
+  reconcileChildren(workInProgress, workInProgress.props.children);
 }
 
 // 最假的吧，但是做的也是遍历子节点
@@ -95,8 +105,12 @@ function reconcileChildren(workInProgress, children) {
       stateNode: null, //如果是原生标签，代表dom节点，如果是类组件就代表实例
       child: null, // 第一个子节点 fiber
       sibling: null, // 下一个兄弟节点  fiber
-      return: null, // 兄弟节点
+      return: workInProgress, // 父节点
     };
+
+    if (isString(child)) {
+      newFiber.props = child;
+    }
 
     if (i === 0) {
       // 第一个子fiber
@@ -124,9 +138,16 @@ function performNextUnitWork(workInProgress) {
   if (isString(type)) {
     // 原生标签
     updateHostComponent(workInProgress);
+  } else if (typeof type === "function") {
+    updateFunctionComponent(workInProgress);
+  } else if (typeof type === "undefined") {
+    // 文本
+    updateTextCompoent(workInProgress);
+  } else {
+    updateFragmentComponent(workInProgress);
   }
 
-  // step2 并且要返回下一个任务
+  // step2 并且要返回下一个任务 深度优先遍历
   if (workInProgress.child) {
     return workInProgress.child;
   }
@@ -152,9 +173,37 @@ function workLoop(IdleDeadline) {
   if (!nextUnitOfWork && wipRoot) {
     commitRoot();
   }
+
+  requestIdleCallback(workLoop);
 }
 
 requestIdleCallback(workLoop);
 
-function commitRoot() {}
+function commitRoot() {
+  commitWorker(wipRoot.child);
+  wipRoot = null;
+}
+function commitWorker(workInProgress) {
+  if (!workInProgress) {
+    return;
+  }
+
+  // 更新自己
+  let parentNodeFiber = workInProgress.return;
+
+  while (!parentNodeFiber.stateNode) {
+    parentNodeFiber = parentNodeFiber.return;
+  }
+
+  let parentNode = parentNodeFiber.stateNode;
+  if (workInProgress.stateNode) {
+    parentNode.appendChild(workInProgress.stateNode);
+  }
+
+  // 更新子节点
+  commitWorker(workInProgress.child);
+  //更新下一个兄弟节点
+  commitWorker(workInProgress.sibling);
+}
+
 export default {render};
