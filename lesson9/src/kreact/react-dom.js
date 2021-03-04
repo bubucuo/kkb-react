@@ -1,15 +1,13 @@
 // vnode 虚拟dom
 // node 真实dom节点
 
+import {Placement, Update} from "./const";
+
 // 根节点 fiber
 let wipRoot = null;
-function render(vnode, container) {
-  // console.log("vnode", vnode); //sy-log
-  // // vnode -> node
-  // const node = createNode(vnode);
-  // // node插入到container中
-  // container.appendChild(node);
+let currentRoot = null;
 
+function render(vnode, container) {
   wipRoot = {
     type: "div",
     props: {children: {...vnode}},
@@ -18,33 +16,50 @@ function render(vnode, container) {
   nextUnitOfWork = wipRoot;
 }
 
-function isString(sth) {
-  return typeof sth === "string";
+function isStringOrNumber(sth) {
+  return typeof sth === "string" || typeof sth === "number";
 }
 
 // 根据vnode，生成node
 function createNode(workInProgress) {
   let node = document.createElement(workInProgress.type);
-  updateNode(node, workInProgress.props);
+  updateNode(node, {}, workInProgress.props);
   return node;
 }
 
-function updateNode(node, nextVal) {
-  Object.keys(nextVal)
-    // .filter((k) => k !== "children")
+// 更新原生标签的属性，如className、href、id、（style、事件）等
+function updateNode(node, prevVal, nextVal) {
+  Object.keys(prevVal)
+    // .filter(k => k !== "children")
     .forEach((k) => {
       if (k === "children") {
-        if (isString(nextVal.children)) {
-          node.textContent = nextVal.children;
+        // 有可能是文本
+        if (isStringOrNumber(prevVal[k])) {
+          node.textContent = "";
         }
+      } else if (k.slice(0, 2) === "on") {
+        const eventName = k.slice(2).toLocaleLowerCase();
+        node.removeEventListener(eventName, prevVal[k]);
       } else {
-        if (k === "style") {
-          for (let attr in nextVal.style) {
-            node.style[attr] = nextVal.style[attr];
-          }
-        } else {
-          node[k] = nextVal[k];
+        if (!(k in nextVal)) {
+          node[k] = "";
         }
+      }
+    });
+
+  Object.keys(nextVal)
+    // .filter(k => k !== "children")
+    .forEach((k) => {
+      if (k === "children") {
+        // 有可能是文本
+        if (isStringOrNumber(nextVal[k])) {
+          node.textContent = nextVal[k] + "";
+        }
+      } else if (k.slice(0, 2) === "on") {
+        const eventName = k.slice(2).toLocaleLowerCase();
+        node.addEventListener(eventName, nextVal[k]);
+      } else {
+        node[k] = nextVal[k];
       }
     });
 }
@@ -59,7 +74,7 @@ function updateHostComponent(workInProgress) {
   // 齐家
   // 协调子节点
   reconcileChildren(workInProgress, workInProgress.props.children);
-  console.log("workInProgress", workInProgress); //sy-log
+  // console.log("workInProgress", workInProgress); //sy-log
 }
 
 // 文本
@@ -70,17 +85,21 @@ function updateTextCompoent(workInProgress) {
 }
 
 function updateFunctionComponent(workInProgress) {
+  // 当前正在工作的fiber以及hook的初始化
+  currentlyRenderingFiber = workInProgress;
+  currentlyRenderingFiber.memoizedState = null;
+  workInProgressHook = null;
+
   const {type, props} = workInProgress;
   const children = type(props);
   reconcileChildren(workInProgress, children);
 }
 
-function updateClassComponent(vnode) {
-  const {type, props} = vnode;
+function updateClassComponent(workInProgress) {
+  const {type, props} = workInProgress;
   const instance = new type(props);
-  const vvnode = instance.render();
-  const node = createNode(vvnode);
-  return node;
+  const children = instance.render();
+  reconcileChildren(workInProgress, children);
 }
 
 function updateFragmentComponent(workInProgress) {
@@ -89,27 +108,62 @@ function updateFragmentComponent(workInProgress) {
 
 // 最假的吧，但是做的也是遍历子节点
 function reconcileChildren(workInProgress, children) {
-  if (isString(children)) {
+  if (isStringOrNumber(children)) {
     return;
   }
 
   let newChildren = Array.isArray(children) ? children : [children];
 
   let previousNewFiber = null;
+  let oldFiber = workInProgress.alternate && workInProgress.alternate.child;
+  // 1 2 3 4
+  // 2 3 4
   for (let i = 0; i < newChildren.length; i++) {
     let child = newChildren[i];
+    let same =
+      child &&
+      oldFiber &&
+      // child.key === oldFiber.key &&
+      child.type === oldFiber.type;
 
-    let newFiber = {
-      type: child.type, // 类型
-      props: {...child.props}, // 属性
-      stateNode: null, //如果是原生标签，代表dom节点，如果是类组件就代表实例
-      child: null, // 第一个子节点 fiber
-      sibling: null, // 下一个兄弟节点  fiber
-      return: workInProgress, // 父节点
-    };
+    let newFiber;
+    if (same) {
+      // 节点复用
+      newFiber = {
+        type: child.type, // 类型
+        props: {...child.props}, // 属性
+        stateNode: oldFiber.stateNode, //如果是原生标签，代表dom节点，如果是类组件就代表实例
+        child: null, // 第一个子节点 fiber
+        sibling: null, // 下一个兄弟节点  fiber
+        return: workInProgress, // 父节点
+        alternate: oldFiber,
+        flags: Update,
+      };
+    }
+    if (!same && child) {
+      // 插入
+      newFiber = {
+        type: child.type, // 类型
+        props: {...child.props}, // 属性
+        stateNode: null, //如果是原生标签，代表dom节点，如果是类组件就代表实例
+        child: null, // 第一个子节点 fiber
+        sibling: null, // 下一个兄弟节点  fiber
+        return: workInProgress, // 父节点
+        alternate: null,
+        flags: Placement,
+      };
+    }
 
-    if (isString(child)) {
+    if (!same && oldFiber) {
+      // 删除
+    }
+
+    if (isStringOrNumber(child)) {
       newFiber.props = child;
+    }
+
+    if (oldFiber) {
+      oldFiber = oldFiber.sibling;
     }
 
     if (i === 0) {
@@ -130,16 +184,19 @@ function reconcileChildren(workInProgress, children) {
 // child 第一个子节点
 // sibling 下一个兄弟节点
 // return 指向父节点
+// alternate 上一次fiber
 
 // work in progress 当前正在执行当中的
 function performNextUnitWork(workInProgress) {
   // step1 执行当前任务
   const {type} = workInProgress;
-  if (isString(type)) {
+  if (isStringOrNumber(type)) {
     // 原生标签
     updateHostComponent(workInProgress);
   } else if (typeof type === "function") {
-    updateFunctionComponent(workInProgress);
+    type.prototype.isReactComponent
+      ? updateClassComponent(workInProgress)
+      : updateFunctionComponent(workInProgress);
   } else if (typeof type === "undefined") {
     // 文本
     updateTextCompoent(workInProgress);
@@ -181,6 +238,7 @@ requestIdleCallback(workLoop);
 
 function commitRoot() {
   commitWorker(wipRoot.child);
+  currentRoot = wipRoot;
   wipRoot = null;
 }
 function commitWorker(workInProgress) {
@@ -196,8 +254,14 @@ function commitWorker(workInProgress) {
   }
 
   let parentNode = parentNodeFiber.stateNode;
-  if (workInProgress.stateNode) {
+  if (workInProgress.flags & Placement && workInProgress.stateNode) {
     parentNode.appendChild(workInProgress.stateNode);
+  } else if (workInProgress.flags & Update && workInProgress.stateNode) {
+    updateNode(
+      workInProgress.stateNode,
+      workInProgress.alternate.props,
+      workInProgress.props
+    );
   }
 
   // 更新子节点
@@ -206,4 +270,66 @@ function commitWorker(workInProgress) {
   commitWorker(workInProgress.sibling);
 }
 
+// 当前正在工作的fiber
+let currentlyRenderingFiber = null;
+// 当前正在工作的hook
+let workInProgressHook = null;
+// 1-》2-》3
+
+// 一个hook
+export function useState(initalState) {
+  let hook;
+  // 判断是否是组件初次渲染
+  if (currentlyRenderingFiber.alternate) {
+    // 不是初次渲染，是更新阶段
+    currentlyRenderingFiber.memoizedState =
+      currentlyRenderingFiber.alternate.memoizedState;
+
+    if (workInProgressHook) {
+    } else {
+      // 是第一个hook
+      workInProgressHook = currentlyRenderingFiber.memoizedState;
+    }
+
+    hook = workInProgressHook;
+  } else {
+    // 初次渲染
+    hook = {
+      memoizedState: initalState, //状态值
+      queue: [],
+      next: null,
+    };
+
+    if (workInProgressHook) {
+      // 不是第一个hook
+      hook = workInProgressHook;
+    } else {
+      // 是第一个hook，挂到fiber节点上
+      currentlyRenderingFiber.memoizedState = workInProgressHook = hook;
+    }
+  }
+
+  // 模拟批量处理
+  hook.queue.forEach((action) => (hook.memoizedState = action));
+
+  const dispatch = (action) => {
+    hook.queue.push(action);
+    wipRoot = {
+      type: currentRoot.type,
+      stateNode: currentRoot.stateNode,
+      props: currentRoot.props,
+      alternate: currentRoot,
+    };
+    nextUnitOfWork = wipRoot;
+  };
+
+  // 指向下一个hook
+  workInProgressHook = workInProgressHook.next;
+
+  return [hook.memoizedState, dispatch];
+}
+
 export default {render};
+
+// setSTate(count+1)
+// setSTate(count+2)

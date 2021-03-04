@@ -1,15 +1,19 @@
-// import React, {Component} from "react";
+// import React, {Component, useState} from "react";
 // import {Fragment} from "react";
 // import ReactDOM from "react-dom";
-import ReactDOM from "./kreact/react-dom";
+
+import ReactDOM, {useState} from "./kreact/react-dom";
 import Component from "./kreact/Component";
 
 import "./index.css";
 
 function FunctionComponent(props) {
+  const [count, setCount] = useState(0);
+
   return (
     <div className="border">
-      <p>函数数组{props.name}</p>
+      <p>{props.name}</p>
+      <button onClick={() => setCount(count + 1)}>{count}</button>
     </div>
   );
 }
@@ -39,7 +43,7 @@ const jsx = (
       kkb
     </a>
     <FunctionComponent name="function" />
-    {/* <ClassComponent name="class" /> */}
+    <ClassComponent name="class" />
     {/* <ul>
       <li>asasa</li>
       <FragmentComponent />
