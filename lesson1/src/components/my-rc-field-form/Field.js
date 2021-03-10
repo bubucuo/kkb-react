@@ -5,7 +5,14 @@ export default class Field extends Component {
   static contextType = FieldContext;
 
   componentDidMount() {
-    this.context.setFieldEntities(this);
+    // 注册
+    this.unregister = this.context.registerFieldEntities(this);
+  }
+
+  componentWillUnmount() {
+    if (this.unregister) {
+      this.unregister();
+    }
   }
 
   onStoreChange = () => {

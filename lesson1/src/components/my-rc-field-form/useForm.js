@@ -5,10 +5,29 @@ class FormStore {
     this.store = {}; // 状态库
     // 组件实例
     this.fieldEntities = [];
+
+    // 记录回调
+    this.callbacks = {};
   }
 
-  setFieldEntities = (entity) => {
+  setCallbacks = (newCallbacks) => {
+    this.callbacks = {
+      ...this.callbacks,
+      ...newCallbacks,
+    };
+  };
+
+  // 有注册，得有取消注册，
+  // 订阅和取消订阅也是要成对出现的
+  registerFieldEntities = (entity) => {
     this.fieldEntities.push(entity);
+
+    return () => {
+      this.fieldEntities = this.fieldEntities.filter(
+        (_entity) => _entity != entity
+      );
+      delete this.store[entity.props.name];
+    };
   };
 
   // get
@@ -20,17 +39,42 @@ class FormStore {
   };
   // set
   setFieldsValue = (newStore) => {
-    // 修改状态库
+    // name: value
+    // 1. 修改状态库
     this.store = {
       ...this.store,
       ...newStore,
     };
 
-    // 更新组件
+    // 2. 更新组件
     this.fieldEntities.forEach((entity) => {
-      entity.onStoreChange();
+      Object.keys(newStore).forEach((k) => {
+        if (k === entity.props.name) {
+          entity.onStoreChange();
+        }
+      });
     });
-    console.log("this.store", this.store); //sy-log
+  };
+
+  validate = () => {
+    let err = [];
+    // todo 校验
+    return err;
+  };
+  submit = () => {
+    const {onFinish, onFinishFailed} = this.callbacks;
+    let err = this.validate();
+
+    if (err.length > 0) {
+      // 失败 onFinishFailed
+      onFinishFailed(this.getFieldsValue(), err);
+    } else {
+      // 成功 onFinish()
+      onFinish(this.getFieldsValue());
+    }
+    console.log("omg"); //sy-log
+    // 校验成功 执行onFinish
+    // 校验失败 执行onFinishFailed
   };
 
   getForm = () => {
@@ -38,7 +82,9 @@ class FormStore {
       getFieldsValue: this.getFieldsValue,
       getFieldValue: this.getFieldValue,
       setFieldsValue: this.setFieldsValue,
-      setFieldEntities: this.setFieldEntities,
+      registerFieldEntities: this.registerFieldEntities,
+      submit: this.submit,
+      setCallbacks: this.setCallbacks,
     };
   };
 }
