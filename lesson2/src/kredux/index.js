@@ -1,7 +1,7 @@
 import createStore from "./createStore";
-// import applyMiddleware from "./applyMiddleware";
+import applyMiddleware from "./applyMiddleware";
 
 export {
   createStore,
-  // , applyMiddleware
+  , applyMiddleware
 };
