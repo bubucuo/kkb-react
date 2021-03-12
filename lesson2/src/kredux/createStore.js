@@ -6,7 +6,6 @@ export default function createStore(reducer, enhancer) {
 
   let currentState;
   let currentListeners = [];
-
   // get
   function getState() {
     return currentState;
