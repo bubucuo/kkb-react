@@ -1,7 +1,7 @@
 import React, {Component} from "react";
-// import {connect} from "react-redux";
-import {bindActionCreators, connect} from "../kReactRedux";
-// import {bindActionCreators} from "redux";
+import {connect} from "react-redux";
+// import {bindActionCreators, connect} from "../kReactRedux";
+import {bindActionCreators} from "redux";
 
 // hoc 是个函数，接收组件作为参数，返回一个新的组件
 // connect原理 高阶组件（hoc）
@@ -12,24 +12,33 @@ import {bindActionCreators, connect} from "../kReactRedux";
     return {count: state.count};
   },
   // mapDispatchToProps: object | function
-  // {
-  //   add: () => ({type: "ADD"}),
-  //   minus: () => ({type: "MINUS"}),
+  {
+    add: () => ({type: "ADD"}), //=> ()=>dispatch({type: "ADD"})
+    minus: () => ({type: "MINUS"}),
+  },
+
+  // (dispatch) => {
+  //   // 想改变状态值
+  //   let creators = {
+  //     add: () => ({type: "ADD"}), //=> ()=>dispatch({type: "ADD"})
+  //     minus: () => ({type: "MINUS"}),
+  //   };
+
+  //   creators = bindActionCreators(creators, dispatch);
+
+  //   return {
+  //     dispatch,
+  //     ...creators,
+  //   };
   // }
-
-  (dispatch) => {
-    // 想改变状态值
-    let creators = {
-      add: () => ({type: "ADD"}), //=> ()=>dispatch({type: "ADD"})
-      minus: () => ({type: "MINUS"}),
-    };
-
-    creators = bindActionCreators(creators, dispatch);
-
-    return {
-      dispatch,
-      ...creators,
-    };
+  (stateProps, dispatchProps, ownProps) => {
+    console.log(
+      "stateProps, dispatchProps, ownProps",
+      stateProps,
+      dispatchProps,
+      ownProps
+    ); //sy-log
+    return {...stateProps, ...dispatchProps, ...ownProps, omg: "omg"};
   }
 )
 class ReactReduxPage extends Component {
