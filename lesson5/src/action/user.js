@@ -1,6 +1,7 @@
-import {LOGIN_FAILURE, LOGIN_SUCCESS, REQUEST} from "./const";
+import {LOGIN_FAILURE, LOGIN_SAGA, LOGIN_SUCCESS, REQUEST} from "./const";
 import LoginService from "../service/login";
 import co from "co";
+import {useForm} from "antd/lib/form/Form";
 // export const login = (userInfo) => ({
 //   type: LOGIN_SUCCESS,
 //   payload: {...userInfo},
@@ -10,6 +11,7 @@ import co from "co";
 // * 方案1 redux-thunk
 // 优点: 使用简单
 // 缺点：容易形成嵌套地狱
+//适合普通简单的异步
 // export const login = (userInfo) => (dispatch) => {
 //   LoginService.login(userInfo).then(
 //     (res) => {
@@ -47,6 +49,9 @@ export const loginPromise = (dispatch, userInfo) => {
 };
 
 // * 方案2 async await 是generator的语法糖
+// 优点 同步的方式实现异步
+// 缺点 比方案1稍微复杂点
+// 适合稍微复杂一点的异步请求
 // export function login(userInfo) {
 //   return async function(dispatch) {
 //     dispatch({type: REQUEST});
@@ -58,14 +63,17 @@ export const loginPromise = (dispatch, userInfo) => {
 // }
 
 // *generator
-export function login(userInfo) {
-  return function(dispatch) {
-    return co(function*() {
-      dispatch({type: REQUEST});
-      let res1 = yield loginPromise(dispatch, userInfo);
-      if (res1) {
-        getMoreUserInfo(dispatch, res1);
-      }
-    });
-  };
-}
+// export function login(userInfo) {
+//   return function(dispatch) {
+//     return co(function*() {
+//       dispatch({type: REQUEST});
+//       let res1 = yield loginPromise(dispatch, userInfo);
+//       if (res1) {
+//         getMoreUserInfo(dispatch, res1);
+//       }
+//     });
+//   };
+// }
+
+// * 方案3 redux-saga （generator）
+export const login = (userInfo) => ({type: LOGIN_SAGA, payload: userInfo});
