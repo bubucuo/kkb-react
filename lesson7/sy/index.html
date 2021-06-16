@@ -1,0 +1,32 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        height: 200%;
+      }
+    </style>
+  </head>
+  <body></body>
+
+  <script>
+    let enqueued = false;
+    function expensiveOperation() {
+      console.log("invoke at", Date.now()); //sy-log
+      enqueued = true;
+    }
+    document.addEventListener("scroll", () => {
+      // console.log("scroll"); //sy-log
+      // expendiveOperation();
+      if (!enqueued) {
+        enqueued = true;
+        expensiveOperation();
+      }
+      setTimeout(() => {
+        enqueued = false;
+      }, 50);
+    });
+  </script>
+</html>
